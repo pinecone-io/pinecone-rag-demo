@@ -64,11 +64,10 @@ export const Card: FC<ICardProps> = ({ card, index, context }) => {
                 horizontal: 'right',
               }}
               sx={{
-                width: "60%",
                 pointerEvents: 'none',
               }}
             >
-              <div className="p-2">
+              <div className="p-2 max-h-[300px] max-w-[300px] overflow-scroll">
                 <ReactMarkdown>{card.pageContent}</ReactMarkdown>
               </div>
             </Popover>
