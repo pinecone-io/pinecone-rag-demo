@@ -9,6 +9,7 @@ import { Card, ICard } from "./Card";
 import { RecursiveSplittingOptions } from "./RecursiveSplittingOptions";
 import { urls } from "./urls";
 import { clearIndex, crawlDocument } from "./utils";
+import { Typography } from "@mui/material";
 
 const styles = {
   contextWrapper: {
