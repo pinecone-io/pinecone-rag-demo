@@ -18,7 +18,8 @@ const styles = {
     alignItems: "flex-start",
     gap: "var(--Spacing-0, 0px)",
     alignSelf: "stretch",
-    backgroundColor: "#FBFBFC"
+    backgroundColor: "#FBFBFC",
+    fontSize: 14
   },
   textHeaderWrapper: {
     display: "flex",
@@ -35,7 +36,7 @@ const styles = {
     maxWidth: "400px"
   },
   h4: {
-    fontWeight: 700, marginBottom: 7
+    fontWeight: 600, marginBottom: 7
   }
 }
 
