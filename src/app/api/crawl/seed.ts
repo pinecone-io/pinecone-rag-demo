@@ -1,9 +1,10 @@
+import { chunkedUpsert } from '@/services/chunkedUpsert';
 import { getEmbeddings } from "@/services/embeddings";
 import { truncateStringByBytes } from "@/utils/truncateString";
 import { Document, MarkdownTextSplitter, RecursiveCharacterTextSplitter } from "@pinecone-database/doc-splitter";
 import { Pinecone, PineconeRecord } from "@pinecone-database/pinecone";
+import { ServerlessSpecCloudEnum } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
 import md5 from "md5";
-import { chunkedUpsert } from '@/services/chunkedUpsert';
 import { Crawler, Page } from "./crawler";
 
 interface SeedOptions {
@@ -11,6 +12,9 @@ interface SeedOptions {
   chunkSize: number
   chunkOverlap: number
 }
+
+const PINECONE_REGION = process.env.PINECONE_REGION || 'us-west-2'
+const PINECONE_CLOUD = process.env.PINECONE_CLOUD || 'aws'
 
 type DocumentSplitter = RecursiveCharacterTextSplitter | MarkdownTextSplitter
 
@@ -37,12 +41,19 @@ async function seed(url: string, limit: number, indexName: string, options: Seed
 
     // Create Pinecone index if it does not exist
     const indexList = await pinecone.listIndexes();
-    const indexExists = indexList.some(index => index.name === indexName)
+    const indexes = indexList.indexes
+    const indexExists = indexes && indexes.some(index => index.name === indexName)
     if (!indexExists) {
       await pinecone.createIndex({
         name: indexName,
         dimension: 1536,
         waitUntilReady: true,
+        spec: {
+          serverless: {
+            region: PINECONE_REGION,
+            cloud: PINECONE_CLOUD as ServerlessSpecCloudEnum
+          }
+        }
       });
     }
 

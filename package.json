@@ -16,7 +16,7 @@
     "@material-tailwind/react": "^2.1.8",
     "@mui/material": "^5.15.3",
     "@pinecone-database/doc-splitter": "^0.0.1",
-    "@pinecone-database/pinecone": "^1.1.2",
+    "@pinecone-database/pinecone": "1.1.2-spruceDev.20240112000931",
     "@types/uuid": "^9.0.7",
     "ai": "^2.2.30",
     "cheerio": "^1.0.0-rc.12",
