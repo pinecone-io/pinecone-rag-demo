@@ -44,6 +44,11 @@ const styles = {
     fontFamily: 'Inter',
     fontWeight: 400,
     fontSize: 14
+  },
+  menuItem: {
+    fontFamily: 'Inter',
+    fontWeight: 400,
+    fontSize: 14
   }
 }
 
@@ -108,7 +113,7 @@ export const Sidebar: React.FC = () => {
     <MenuItem
 
       key={key} value={entry.url}
-    ><div className="flex-col" data-testid={entry.url}>
+    ><div style={styles.menuItem} className="flex-col" data-testid={entry.url}>
         <div>{entry.title}</div>
         <div style={{ ...styles.entryUrl, whiteSpace: 'nowrap' as 'nowrap' }}>{entry.url}</div>
       </div>
@@ -136,7 +141,7 @@ export const Sidebar: React.FC = () => {
               style: {
                 width: 'fit-content',
                 marginLeft: 15,
-                marginTop: 10,
+                marginTop: 8
               },
             },
           }}>
@@ -164,7 +169,7 @@ export const Sidebar: React.FC = () => {
                 style: {
                   marginTop: 10,
                   marginLeft: 15,
-                  width: '30%',
+                  width: '30%'
                 }
               }
             }} >
