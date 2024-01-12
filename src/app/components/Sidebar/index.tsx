@@ -205,7 +205,7 @@ export const Sidebar: React.FC = () => {
           />
         )}
         <Button
-          className={`my-2 duration-100 button-primary ${crawlingDoneVisible ? "bg-green-500" : "bg-blue-700"} text-white font-medium px-8 py-3 transition-all duration-500 ease-in-out`}
+          className={`my-2 duration-100 button-primary ${crawlingDoneVisible ? "#15B077" : "#1B17F5"} text-white font-medium px-8 py-3 transition-all duration-500 ease-in-out`}
           onClick={handleEmbedAndUpsertClick}
           style={{ 
             backgroundColor: `${crawlingDoneVisible ? "#15B077" : "#1B17F5"}`, 
@@ -230,7 +230,7 @@ export const Sidebar: React.FC = () => {
         <div className="text-[#1B17F5] ml-auto cursor-pointer text-xs" onClick={handleClearIndexClick} data-testid="clear-button">Clear</div>
       </div>
       {(
-        <div className={`text-xs mt-1 
+        <div className={`text-xs mt-4 
                         transition-all 
                         duration-500 
                         ease-in-out 
@@ -252,23 +252,23 @@ export const Sidebar: React.FC = () => {
           }} /> <span className="ml-2">Chunking and embedding your data...</span>
         </div>
       )}
-      <div className="flex flex-wrap w-full">
-        <div className="flex">
-          {cards && cards.length > 0 ?
-            <div className="mt-2 flex flex-row text-[#72788D]">
-              <div className="font-bold mb-2 whitespace-nowrap">{cards.length} results</div>
-              <div className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap max-w-xs">
-                <a href={url} target="_blank">{url}</a>
-              </div>
-            </div>
-            :
-            <div></div>
-          }
-        </div>
-      </div>
+      {/* <div className="flex flex-wrap w-full">
+            <div className="flex">
+                  {cards && cards.length > 0 ?
+                    <div className="mt-2 flex flex-row text-[#72788D]">
+                      <div className="font-bold mb-2 whitespace-nowrap">{cards.length} results</div>
+                      <div className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap max-w-xs">
+                        <a href={url} target="_blank">{url}</a>
+                      </div>
+                    </div>
+                    :
+                    <div></div>
+                  }
+                </div>
+            </div> */}
       <div className="flex flex-col w-full">
         {cards.map((card, index) => (
-          <Card key={index} card={card} index={index} context={null} id={card.id} />
+         <Card key={index} card={card} index={index} context={null} id={card.id} />
         ))}
         {cards.length > 0 && (<div className="text-[#72788D]">End of results</div>)}
       </div>
