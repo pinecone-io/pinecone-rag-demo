@@ -212,7 +212,8 @@ export const Sidebar: React.FC = () => {
             fontSize: 14, 
             textTransform: 'none', 
             padding: '12px 22px',
-            marginBottom: '24px'
+            marginBottom: '24px',
+            borderRadius: '4px'
            }}
           placeholder=""
         >
