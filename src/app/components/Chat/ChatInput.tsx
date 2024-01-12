@@ -19,7 +19,6 @@ const styles = {
 const ChatInput: React.FC<ChatInputProps> = ({ input, handleInputChange, handleMessageSubmit, showIndexMessage }) => {
     return (
         <div style={styles.container} className="w-full">
-            <input type="text" />
             <form
                 onSubmit={handleMessageSubmit}
                 className="bg-white rounded-lg relative"

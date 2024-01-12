@@ -6,6 +6,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import React, { useContext, useState } from "react";
 import Header from "../Header";
 import { Card, ICard } from "./Card";
+import { InfoPopover } from "./InfoPopover";
 import { RecursiveSplittingOptions } from "./RecursiveSplittingOptions";
 import { urls } from "./urls";
 import { clearIndex, crawlDocument } from "./utils";
@@ -49,8 +50,6 @@ export const Sidebar: React.FC = () => {
   const [clearIndexComplete, setClearIndexCompleteMessageVisible] = useState<boolean>(false)
   const [crawling, setCrawling] = useState<boolean>(false)
   const [crawlingDoneVisible, setCrawlingDoneVisible] = useState<boolean>(false)
-  const [openChunkSizePopover, setOpenChunkSizePopover] = useState(false);
-  const [openOverLapPopover, setOpenOverLapPopover] = useState(false);
 
   const { refreshIndex } = useContext(AppContext);
 
@@ -137,16 +136,43 @@ export const Sidebar: React.FC = () => {
           </Select>
         </div>
         <div className="mb-3 w-full">
-          <h4 style={styles.h4}>Splitting method</h4>
-          <Select value={splittingMethod} className="w-full" onChange={handleSplittingMethodChange} MenuProps={{
-            PaperProps: {
-              style: {
-                marginTop: 10
+          <h4 style={styles.h4} className="flex items-center">
+            <div>Chunking method</div>
+            <InfoPopover
+              className="ml-1"
+              infoText="Your splitting method determines how documents are split into smaller chunks for vector embedding to accommodate size limits. Overlapping content between chunks preserves context, improving search relevance."
+            />
+          </h4>
+          <Select value={splittingMethod} className="w-full" onChange={handleSplittingMethodChange}
+            renderValue={(value) => {
+              if (value === "markdown") {
+                return "Markdown Chunking";
+              } else if (value === "recursive") {
+                return "Recursive Chunking";
               }
-            }
-          }} >
-            <MenuItem value="markdown">Markdown Splitting</MenuItem>
-            <MenuItem value="recursive">Recursive Text Splitting</MenuItem>
+            }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  marginTop: 10,
+                  marginLeft: 15,
+                  width: '30%',
+                }
+              }
+            }} >
+            <MenuItem value="markdown" className="max-w-full overflow-auto whitespace-normal">
+              <div className="flex flex-col ">
+                <div className="font-bold">Markdown chunking</div>
+                <div className="text-[14px]">Markdown chunking leverages the structure of the document itself, creating chunks that correlate to the markdown semantics of the content. The crawler converts the URL content to markdown and then applies the markdown chunking methods on the content.</div>
+              </div>
+            </MenuItem>
+            <MenuItem value="recursive" className="max-w-full overflow-auto whitespace-normal">
+              <div className="flex flex-col">
+                <div className="font-bold">Recursive Chunking</div>
+                <div className="text-[14px]">With recursive chunking, the text will be divided into smaller parts in each recursion step, based on the chunk size you define. The overlap will ensure that the chunks include content found in adjacent chunks so that no content is lost.  </div>
+              </div>
+
+            </MenuItem>
           </Select>
         </div>
         {splittingMethod === "recursive" && (
@@ -155,10 +181,6 @@ export const Sidebar: React.FC = () => {
             setChunkSize={setChunkSize}
             overlap={overlap}
             setOverlap={setOverlap}
-            openChunkSizePopover={openChunkSizePopover}
-            setOpenChunkSizePopover={setOpenChunkSizePopover}
-            openOverLapPopover={openOverLapPopover}
-            setOpenOverLapPopover={setOpenOverLapPopover}
           />
         )}
         <Button

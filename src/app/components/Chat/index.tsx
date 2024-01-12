@@ -31,8 +31,7 @@ const Chat: React.FC<ChatProps> = ({ setContext, context }) => {
 
   return (
     <div id="chat" className="flex flex-col w-full h-full">
-
-      <div className="flex flex-grow">
+      <div className="flex flex-grow h-full h-max-screen overflow-auto">
         <div className="w-1/2">
           <ChatWrapper ref={chatWithoutContextRef} withContext={true} setContext={setContext} context={context} />
         </div>
@@ -40,7 +39,6 @@ const Chat: React.FC<ChatProps> = ({ setContext, context }) => {
           <ChatWrapper ref={chatWithContextRef} withContext={false} setContext={setContext} />
         </div>
       </div>
-
       <div className="w-full">
         <ChatInput input={input} handleInputChange={onInputChange} handleMessageSubmit={onMessageSubmit} showIndexMessage={totalRecords === 0} />
       </div>

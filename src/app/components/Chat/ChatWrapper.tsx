@@ -19,12 +19,14 @@ interface ChatProps {
 }
 
 const Chat: React.FC<ChatProps> = forwardRef<ChatInterface, ChatProps>(({ withContext, setContext, context }, ref) => {
-    const { messages, handleInputChange, handleSubmit, isLoading, data } = useChat({
+    const { messages, handleInputChange, handleSubmit, isLoading, data, } = useChat({
         sendExtraMessageFields: true,
         body: {
             withContext,
         },
     });
+
+    const bottomChatRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         if (data) {
@@ -32,15 +34,18 @@ const Chat: React.FC<ChatProps> = forwardRef<ChatInterface, ChatProps>(({ withCo
         }
     }, [data, setContext]);
 
+    useEffect(() => {
+        bottomChatRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
     const chatRef = useRef<ChatInterface>(null);
 
     useImperativeHandle(ref, () => ({
         handleMessageSubmit: (event: FormEvent<HTMLFormElement>) => {
-            const id = uuidv4(); // Generate a unique ID
+            const id = uuidv4();
             handleSubmit(event, {
                 data: {
-                    messageId: id, // Include the ID in the message object
-                    // Include any other extra fields here
+                    messageId: id,
                 },
             })
         },
@@ -51,11 +56,13 @@ const Chat: React.FC<ChatProps> = forwardRef<ChatInterface, ChatProps>(({ withCo
         ref: chatRef,
     }));
 
-
     return (
         <div className="flex-col w-50 overflow-auto h-full" style={{ borderLeft: "1px solid #738FAB1F" }}>
-            {context ? <Messages messages={messages} withContext={withContext} context={context} /> : <Messages messages={messages} withContext={withContext} />}
-        </div>
+            <div className={`${messages.length == 0 ? "flex flex-col justify-center items-center h-full" : "overflow-auto"}`}>
+                {context ? <Messages messages={messages} withContext={withContext} context={context} /> : <Messages messages={messages} withContext={withContext} />}
+                <div ref={bottomChatRef} />
+            </div>
+        </div >
     );
 });
 
