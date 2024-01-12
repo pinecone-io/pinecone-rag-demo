@@ -10,7 +10,6 @@ import { InfoPopover } from "./InfoPopover";
 import { RecursiveSplittingOptions } from "./RecursiveSplittingOptions";
 import { urls } from "./urls";
 import { clearIndex, crawlDocument } from "./utils";
-import { Typography } from "@mui/material";
 
 const styles = {
   contextWrapper: {
@@ -142,7 +141,7 @@ export const Sidebar: React.FC = () => {
             <div>Chunking method</div>
             <InfoPopover
               className="ml-1"
-              infoText="Your splitting method determines how documents are split into smaller chunks for vector embedding to accommodate size limits. Overlapping content between chunks preserves context, improving search relevance."
+              infoText="The chunking method determines how documents are split into smaller chunks for vector embedding to accommodate size limits. Overlapping content between chunks preserves context, improving search relevance."
             />
           </h4>
           <Select value={splittingMethod} className="w-full" onChange={handleSplittingMethodChange}
