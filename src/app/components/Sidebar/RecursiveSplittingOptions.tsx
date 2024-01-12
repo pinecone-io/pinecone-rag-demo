@@ -24,7 +24,7 @@ export const RecursiveSplittingOptions: React.FC<RecursiveSplittingOptionsProps>
                         <span>Chunk Size: </span><span className="font-bold">{chunkSize}</span><span>
                             <div>
                                 <InfoPopover
-                                    className="mt-1"
+                                    className="mt-[1.5px]"
                                     infoText="Chunk size in recursive text splitting is the user defined portion of text that&apos;s divided and processed in each recursion step, influencing the accuracy of the operation."
                                 />
                             </div>
@@ -45,7 +45,7 @@ export const RecursiveSplittingOptions: React.FC<RecursiveSplittingOptionsProps>
                         <span>Overlap:</span><span className="font-bold">{overlap}</span><span>
                             <div>
                                 <InfoPopover
-                                    className="mt-1"
+                                    className="mt-[1.5px]"
                                     infoText="Overlap in recursive text splitting is the user-specified section of text that&apos;s intentionally repeated across chunks to maintain context and potentially enhance accuracy."
                                 />
                             </div>
