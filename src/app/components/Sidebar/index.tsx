@@ -40,7 +40,8 @@ const styles = {
     fontSize: 16
   },
   select: {
-    fontWeight: 450,
+    fontFamily: 'Inter',
+    fontWeight: 400,
     fontSize: 14
   }
 }
