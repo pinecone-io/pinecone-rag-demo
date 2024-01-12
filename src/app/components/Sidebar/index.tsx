@@ -126,7 +126,7 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-column w-full" style={{ ...styles.textHeaderWrapper, flexDirection: "column", }}>
-        <div className="mb-3 w-full">
+        <div className="mb-5 w-full">
           <h4 style={styles.h4}>Select demo url to index</h4>
           <Select style={styles.select} className="w-full" value={url} data-testid="url-selector" onChange={handleUrlChange} MenuProps={{
             keepMounted: true,
