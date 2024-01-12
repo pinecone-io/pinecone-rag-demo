@@ -36,7 +36,12 @@ const styles = {
     maxWidth: "400px"
   },
   h4: {
-    fontWeight: 600, marginBottom: 7
+    fontWeight: 600, marginBottom: 7,
+    fontSize: 16
+  },
+  select: {
+    fontWeight: 450,
+    fontSize: 14
   }
 }
 
@@ -123,7 +128,7 @@ export const Sidebar: React.FC = () => {
       <div className="flex flex-column w-full" style={{ ...styles.textHeaderWrapper, flexDirection: "column", }}>
         <div className="mb-3 w-full">
           <h4 style={styles.h4}>Select demo url to index</h4>
-          <Select className="w-full" value={url} data-testid="url-selector" onChange={handleUrlChange} MenuProps={{
+          <Select style={styles.select} className="w-full" value={url} data-testid="url-selector" onChange={handleUrlChange} MenuProps={{
             keepMounted: true,
             PaperProps: {
               style: {
@@ -144,7 +149,7 @@ export const Sidebar: React.FC = () => {
               infoText="The chunking method determines how documents are split into smaller chunks for vector embedding to accommodate size limits. Overlapping content between chunks preserves context, improving search relevance."
             />
           </h4>
-          <Select value={splittingMethod} className="w-full" onChange={handleSplittingMethodChange}
+          <Select style={styles.select} value={splittingMethod} className="w-full" onChange={handleSplittingMethodChange}
             renderValue={(value) => {
               if (value === "markdown") {
                 return "Markdown Chunking";
