@@ -49,6 +49,13 @@ const styles = {
     fontFamily: 'Inter',
     fontWeight: 400,
     fontSize: 14
+  },
+  h7: {
+    fontFamily: 'Inter',
+    fontWeight: 400,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1
   }
 }
 
@@ -133,7 +140,7 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-column w-full" style={{ ...styles.textHeaderWrapper, flexDirection: "column", }}>
-        <div className="mb-5 w-full">
+        <div className="mb-6 w-full">
           <h4 style={styles.h4}>Select demo url to index</h4>
           <Select style={styles.select} className="w-full" value={url} data-testid="url-selector" onChange={handleUrlChange} IconComponent={ExpandMoreIcon} MenuProps={{
             keepMounted: true,
@@ -148,7 +155,7 @@ export const Sidebar: React.FC = () => {
             {menuItems}
           </Select>
         </div>
-        <div className="mb-3 w-full">
+        <div className="mb-5 w-full">
           <h4 style={styles.h4} className="flex items-center">
             <div>Chunking method</div>
             <InfoPopover
@@ -204,7 +211,8 @@ export const Sidebar: React.FC = () => {
             fontFamily: 'Inter', 
             fontSize: 14, 
             textTransform: 'none', 
-            padding: '12px 22px'
+            padding: '12px 22px',
+            marginBottom: '24px'
            }}
           placeholder=""
         >
@@ -217,7 +225,7 @@ export const Sidebar: React.FC = () => {
         </Button>
       </div>
       <div className="flex flex-wrap w-full mt-5 pb-2 border-b border-[#738FAB1F]">
-        <div className="text-xs uppercase">Index records</div>
+        <div style={styles.h7}>Index records</div>
         <div className="text-[#1B17F5] ml-auto cursor-pointer text-xs" onClick={handleClearIndexClick} data-testid="clear-button">Clear</div>
       </div>
       {(
