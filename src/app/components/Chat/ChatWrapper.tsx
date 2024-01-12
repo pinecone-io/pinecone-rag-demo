@@ -19,20 +19,25 @@ interface ChatProps {
 }
 
 const Chat: React.FC<ChatProps> = forwardRef<ChatInterface, ChatProps>(({ withContext, setContext, context }, ref) => {
-    const { messages, handleInputChange, handleSubmit, isLoading, data, } = useChat({
+    const [finished, setFinished] = React.useState<boolean>(false)
+    const { messages, handleInputChange, handleSubmit, data } = useChat({
         sendExtraMessageFields: true,
         body: {
             withContext,
         },
+        onFinish: () => {
+            setFinished(true)
+        }
     });
 
     const bottomChatRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        if (data) {
+        if (finished && withContext && data) {
             setContext(data as { context: PineconeRecord[] }[]) // Logs the additional data
+            setFinished(false)
         }
-    }, [data, setContext]);
+    }, [data, finished, withContext, setContext]);
 
     useEffect(() => {
         bottomChatRef.current?.scrollIntoView({ behavior: "smooth" });
