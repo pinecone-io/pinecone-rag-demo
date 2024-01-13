@@ -236,9 +236,9 @@ export const Sidebar: React.FC = () => {
       <div className="flex flex-wrap w-full">
         <div className="flex">
           {cards && cards.length > 0 ?
-            <div className="mt-2 flex flex-row text-[#72788D]">
-              <div className="font-bold mb-2 whitespace-nowrap">{cards.length} results</div>
-              <div className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap max-w-xs">
+            <div className="mt-2 flex flex-row">
+              <div className="font-semibold mb-6 whitespace-nowrap">{cards.length} records:</div>
+              <div className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap max-w-xs text-[#72788D]">
                 <a href={url} target="_blank">{url}</a>
               </div>
             </div>
