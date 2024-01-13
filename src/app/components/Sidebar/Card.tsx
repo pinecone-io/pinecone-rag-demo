@@ -32,7 +32,7 @@ export const Card: FC<ICardProps> = ({ card, index, context }) => {
   return (
     <div
       id={card.id}
-      className={"mb-2"}
+      className={"mb-4"}
     >
       <div className="flex-col w-full">
         <div className="flex w-full">
@@ -75,12 +75,12 @@ export const Card: FC<ICardProps> = ({ card, index, context }) => {
 
         </div>
       </div>
-      <div className="flex">
-        {/* {selected && selected.includes(card.metadata.hash) && <BlueEllipseSvg />} */}
+      {/* <div className="flex"> 
+        {selected && selected.includes(card.metadata.hash) && <BlueEllipseSvg />}
         <b className="text-xs mt-2" style={{ color: "#72788D", fontWeight: 400 }}>
           ID: {card.metadata.hash}
         </b>
-      </div>
+      </div>*/}
     </div>
   )
 

@@ -206,12 +206,12 @@ export const Sidebar: React.FC = () => {
           </div>)}
         </Button>
       </div>
-      <div className="flex flex-wrap w-full mt-5 pb-2 border-b border-[#738FAB1F]">
+      <div className="flex flex-wrap w-full mt-5 border-b border-[#738FAB1F]">
         <div style={styles.h7}>Index records</div>
         <div className="text-[#1B17F5] ml-auto cursor-pointer text-xs" onClick={handleClearIndexClick} data-testid="clear-button">Clear</div>
       </div>
       {(
-        <div className={`text-xs mt-6 
+        <div className={`text-xs mt-4 
                         transition-all 
                         duration-500 
                         ease-in-out 
@@ -222,7 +222,7 @@ export const Sidebar: React.FC = () => {
         </div>
       )}
       {(
-        <div className={`text-xs mt-0  
+        <div className={`text-xs mt-2  
                         transition-all 
                         duration-500 
                         ease-in-out 
@@ -237,7 +237,7 @@ export const Sidebar: React.FC = () => {
         <div className="flex">
           {cards && cards.length > 0 ?
             <div className="mt-2 flex flex-row">
-              <div className="font-semibold mb-6 whitespace-nowrap">{cards.length} records:</div>
+              <div className="font-semibold mb-4 whitespace-nowrap">{cards.length} records:</div>
               <div className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap max-w-xs text-[#72788D]">
                 <a href={url} target="_blank">{url}</a>
               </div>
