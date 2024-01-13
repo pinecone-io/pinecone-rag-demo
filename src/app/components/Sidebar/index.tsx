@@ -2,6 +2,7 @@ import AppContext from "@/appContext";
 import { Button } from "@material-tailwind/react";
 import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import React, { useContext, useState } from "react";
@@ -37,22 +38,7 @@ const styles = {
     maxWidth: "400px"
   },
   h4: {
-    fontWeight: 500, marginBottom: 7,
-    fontSize: 16
-  },
-  select: {
-    fontWeight: 400,
-    fontSize: 14
-  },
-  menuItem: {
-    fontWeight: 400,
-    fontSize: 14
-  },
-  h7: {
-    fontWeight: 400,
-    fontSize: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 1
+    fontWeight: 600, marginBottom: 7
   }
 }
 
@@ -204,15 +190,7 @@ export const Sidebar: React.FC = () => {
         <Button
           className={`my-2 duration-100 button-primary ${crawlingDoneVisible ? "#15B077" : "#1B17F5"} text-white font-medium px-8 py-3 transition-all duration-500 ease-in-out`}
           onClick={handleEmbedAndUpsertClick}
-          style={{ 
-            backgroundColor: `${crawlingDoneVisible ? "#15B077" : "#1B17F5"}`, 
-            // fontFamily: 'Inter', 
-            fontSize: 14, 
-            textTransform: 'none', 
-            padding: '12px 22px',
-            marginBottom: '24px',
-            borderRadius: '4px'
-           }}
+          style={{ backgroundColor: `${crawlingDoneVisible ? "#15B077" : "#1B17F5"}` }}
           placeholder=""
         >
           {!crawling ? (crawlingDoneVisible ? "Success" : "Embed and upsert") : (<div className="flex">
