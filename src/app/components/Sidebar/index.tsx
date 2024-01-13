@@ -38,6 +38,11 @@ const styles = {
   },
   h4: {
     fontWeight: 600, marginBottom: 8, fontSize: 16
+  },
+  h7: {
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1
   }
 }
 
@@ -201,7 +206,7 @@ export const Sidebar: React.FC = () => {
         </Button>
       </div>
       <div className="flex flex-wrap w-full mt-5 pb-2 border-b border-[#738FAB1F]">
-        <div className="text-xs uppercase">Index records</div>
+        <div style={styles.h7}>Index records</div>
         <div className="text-[#1B17F5] ml-auto cursor-pointer text-xs" onClick={handleClearIndexClick} data-testid="clear-button">Clear</div>
       </div>
       {(
