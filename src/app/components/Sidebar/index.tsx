@@ -11,6 +11,7 @@ import { InfoPopover } from "./InfoPopover";
 import { RecursiveSplittingOptions } from "./RecursiveSplittingOptions";
 import { urls } from "./urls";
 import { clearIndex, crawlDocument } from "./utils";
+import { grey } from "@mui/material/colors";
 
 const styles = {
   contextWrapper: {
@@ -170,14 +171,14 @@ export const Sidebar: React.FC = () => {
             {/* Using tailwind here resulted in broken css when deployed on Vercel */}
             <MenuItem value="markdown" style={{ maxWidth: '100%', overflow: 'auto', whiteSpace: 'normal' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontWeight: 'bold' }}>Markdown chunking</div>
-                <div style={{ fontSize: 14 }}>Markdown chunking leverages the structure of the document itself, creating chunks that correlate to the markdown semantics of the content. The crawler converts the URL content to markdown and then applies the markdown chunking methods on the content.</div>
+                <div>Markdown chunking</div>
+                <div style={{ fontSize: 14, color: 'grey' }}>Markdown chunking leverages the structure of the document itself, creating chunks that correlate to the markdown semantics of the content. The crawler converts the URL content to markdown and then applies the markdown chunking methods on the content.</div>
               </div>
             </MenuItem>
             <MenuItem value="recursive" style={{ maxWidth: '100%', overflow: 'auto', whiteSpace: 'normal' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontWeight: 'bold' }}>Recursive Chunking</div>
-                <div style={{ fontSize: 14 }}>With recursive chunking, the text will be divided into smaller parts in each recursion step, based on the chunk size you define. The overlap will ensure that the chunks include content found in adjacent chunks so that no content is lost.  </div>
+                <div>Recursive Chunking</div>
+                <div style={{ fontSize: 14, color: 'grey' }}>With recursive chunking, the text will be divided into smaller parts in each recursion step, based on the chunk size you define. The overlap will ensure that the chunks include content found in adjacent chunks so that no content is lost.  </div>
               </div>
 
             </MenuItem>
