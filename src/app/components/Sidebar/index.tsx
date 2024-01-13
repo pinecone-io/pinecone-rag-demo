@@ -2,7 +2,6 @@ import AppContext from "@/appContext";
 import { Button } from "@material-tailwind/react";
 import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import React, { useContext, useState } from "react";
