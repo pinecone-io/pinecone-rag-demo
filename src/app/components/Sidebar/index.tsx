@@ -36,7 +36,7 @@ const styles = {
     maxWidth: "400px"
   },
   h4: {
-    fontWeight: 600, marginBottom: 7
+    fontWeight: 600, marginBottom: 8, fontSize: 16
   }
 }
 
@@ -121,7 +121,7 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-column w-full" style={{ ...styles.textHeaderWrapper, flexDirection: "column", }}>
-        <div className="mb-3 w-full">
+        <div className="mb-6 w-full">
           <h4 style={styles.h4}>Select demo url to index</h4>
           <Select className="w-full" value={url} data-testid="url-selector" onChange={handleUrlChange} MenuProps={{
             keepMounted: true,
@@ -136,7 +136,7 @@ export const Sidebar: React.FC = () => {
             {menuItems}
           </Select>
         </div>
-        <div className="mb-3 w-full">
+        <div className="mb-6 w-full">
           <h4 style={styles.h4} className="flex items-center">
             <div>Chunking method</div>
             <InfoPopover
@@ -186,7 +186,7 @@ export const Sidebar: React.FC = () => {
           />
         )}
         <Button
-          className={`my-2 duration-100 button-primary ${crawlingDoneVisible ? "bg-green-500" : "bg-blue-700"} text-white font-medium px-8 py-3 transition-all duration-500 ease-in-out`}
+          className={`mb-6 duration-100 button-primary ${crawlingDoneVisible ? "bg-green-500" : "bg-blue-700"} text-white font-medium px-8 py-3 transition-all duration-500 ease-in-out`}
           onClick={handleEmbedAndUpsertClick}
           style={{ backgroundColor: `${crawlingDoneVisible ? "#15B077" : "#1B17F5"}`, textTransform: 'none', fontSize: 14, borderRadius: 4, padding: '12px 22px', fontWeight: 400 }}
           placeholder=""
@@ -204,7 +204,7 @@ export const Sidebar: React.FC = () => {
         <div className="text-[#1B17F5] ml-auto cursor-pointer text-xs" onClick={handleClearIndexClick} data-testid="clear-button">Clear</div>
       </div>
       {(
-        <div className={`text-xs mt-1 
+        <div className={`text-xs mt-6 
                         transition-all 
                         duration-500 
                         ease-in-out 
@@ -215,7 +215,7 @@ export const Sidebar: React.FC = () => {
         </div>
       )}
       {(
-        <div className={`text-xs mt-1 mb-2 
+        <div className={`text-xs mt-0  
                         transition-all 
                         duration-500 
                         ease-in-out 
