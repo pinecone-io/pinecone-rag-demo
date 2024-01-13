@@ -41,17 +41,14 @@ const styles = {
     fontSize: 16
   },
   select: {
-    fontFamily: 'Inter',
     fontWeight: 400,
     fontSize: 14
   },
   menuItem: {
-    fontFamily: 'Inter',
     fontWeight: 400,
     fontSize: 14
   },
   h7: {
-    fontFamily: 'Inter',
     fontWeight: 400,
     fontSize: 12,
     textTransform: 'uppercase',
@@ -209,7 +206,7 @@ export const Sidebar: React.FC = () => {
           onClick={handleEmbedAndUpsertClick}
           style={{ 
             backgroundColor: `${crawlingDoneVisible ? "#15B077" : "#1B17F5"}`, 
-            fontFamily: 'Inter', 
+            // fontFamily: 'Inter', 
             fontSize: 14, 
             textTransform: 'none', 
             padding: '12px 22px',
