@@ -1,7 +1,7 @@
 import AppContext from "@/appContext";
 import { Button } from "@material-tailwind/react";
-import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CircularProgress from '@mui/material/CircularProgress';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import React, { useContext, useState } from "react";
@@ -11,9 +11,8 @@ import { InfoPopover } from "./InfoPopover";
 import { RecursiveSplittingOptions } from "./RecursiveSplittingOptions";
 import { urls } from "./urls";
 import { clearIndex, crawlDocument } from "./utils";
-import { grey } from "@mui/material/colors";
 
-const styles = {
+const styles: Record<string, React.CSSProperties> = {
   contextWrapper: {
     display: "flex",
     padding: "var(--spacer-huge, 64px) var(--spacer-m, 32px) var(--spacer-m, 32px) var(--spacer-m, 32px)",
@@ -207,7 +206,7 @@ export const Sidebar: React.FC = () => {
         </Button>
       </div>
       <div className="flex flex-wrap w-full mt-5 border-b border-[#738FAB1F]">
-        <div style={styles.h7}>Index records</div>
+        <div style={{ ...styles.h7 }}>Index records</div>
         <div className="text-[#1B17F5] ml-auto cursor-pointer text-xs" onClick={handleClearIndexClick} data-testid="clear-button">Clear</div>
       </div>
       {(
