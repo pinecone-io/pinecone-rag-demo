@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/Sidebar";
 import useRefreshIndex from '@/hooks/useRefreshIndex';
 import type { PineconeRecord } from "@pinecone-database/pinecone";
 import React, { useEffect, useState } from "react";
+import { FaGithub } from 'react-icons/fa';
 import AppContext from "./appContext";
 
 const Page: React.FC = () => {
@@ -27,6 +28,11 @@ const Page: React.FC = () => {
             <Sidebar />
           </div>
           <Chat setContext={setContext} context={context} />
+        </div>
+        <div className="fixed top-0 right-0 p-4">
+          <a href="https://github.com/pinecone-io/pinecone-rag-demo" target="_blank" rel="noopener noreferrer">
+            <FaGithub size={32} />
+          </a>
         </div>
       </div>
     </AppContext.Provider>
