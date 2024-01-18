@@ -21,8 +21,8 @@ dependencies:
     specifier: ^0.0.1
     version: 0.0.1
   '@pinecone-database/pinecone':
-    specifier: 1.1.2-spruceDev.20240112000931
-    version: 1.1.2-spruceDev.20240112000931
+    specifier: 2.0.0
+    version: 2.0.0
   '@types/uuid':
     specifier: ^9.0.7
     version: 9.0.7
@@ -820,8 +820,8 @@ packages:
     engines: {node: '>=14.0.0'}
     dev: false
 
-  /@pinecone-database/pinecone@1.1.2-spruceDev.20240112000931:
-    resolution: {integrity: sha512-QU6BpdtbNra5JQ9oatCil66ff6gORhoF+KTeorJmkQyK1J/shx0CpsO/+tQy+zm+2ABnFN08xVj6Gkj/Ru5/nw==}
+  /@pinecone-database/pinecone@2.0.0:
+    resolution: {integrity: sha512-deDcyJNqqgbww+nt3asqkdsTTASYOdVwfqlRmumKKT+v9760+tupRoUVPWqZ1+3LoVyvC+03DfhulQQHz6rC3Q==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@sinclair/typebox': 0.29.6
