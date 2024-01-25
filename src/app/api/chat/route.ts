@@ -1,7 +1,8 @@
-import { Configuration, OpenAIApi } from 'openai-edge'
-import { Message, OpenAIStream, StreamingTextResponse, experimental_StreamData } from 'ai'
 import { Metadata, getContext } from '@/services/context'
-import { PineconeRecord, ScoredVector } from '@pinecone-database/pinecone'
+import type { PineconeRecord } from '@pinecone-database/pinecone'
+import { Message, OpenAIStream, StreamingTextResponse, experimental_StreamData } from 'ai'
+import { Configuration, OpenAIApi } from 'openai-edge'
+
 
 // Create an OpenAI API client (that's edge friendly!)
 const config = new Configuration({
@@ -16,8 +17,6 @@ export async function POST(req: Request) {
   try {
 
     const { messages, withContext, messageId } = await req.json()
-    console.log("messageId", messageId)
-
     // Get the last message
     const lastMessage = messages[messages.length - 1]
 
