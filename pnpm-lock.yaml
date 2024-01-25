@@ -24,8 +24,8 @@ dependencies:
     specifier: ^0.0.1
     version: 0.0.1
   '@pinecone-database/pinecone':
-    specifier: ^1.1.2
-    version: 1.1.2
+    specifier: 2.0.0
+    version: 2.0.0
   '@types/uuid':
     specifier: ^9.0.7
     version: 9.0.7
@@ -201,18 +201,6 @@ packages:
       '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
-    dev: false
-
-  /@edge-runtime/primitives@4.0.5:
-    resolution: {integrity: sha512-t7QiN5d/KpXgCvIfSt6Nm9Hj3WVdNgc5CpOD73jasY+9EvTI7Ngdj5cXvjcHrPcmYWJZMySPgeEeoL/1N/Llag==}
-    engines: {node: '>=16'}
-    dev: false
-
-  /@edge-runtime/types@2.2.7:
-    resolution: {integrity: sha512-9MTwGooICP7+ZsX9BTy6YCRzOr4tP6RFRymsc8CaKORfvuAHgLZUQaLwILfQ94tddufVXcBwq637VfEd3ZXbWA==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@edge-runtime/primitives': 4.0.5
     dev: false
 
   /@emotion/babel-plugin@11.11.0:
@@ -844,17 +832,14 @@ packages:
     engines: {node: '>=14.0.0'}
     dev: false
 
-  /@pinecone-database/pinecone@1.1.2:
-    resolution: {integrity: sha512-xrvaMWWloTjT70pSxvw+Es2f7qX5lzhtTZBfduagtwGQqK0nFMqS6Jq+1yqzobDaUhqfRfVwRZ95Gm10odqD3Q==}
+  /@pinecone-database/pinecone@2.0.0:
+    resolution: {integrity: sha512-deDcyJNqqgbww+nt3asqkdsTTASYOdVwfqlRmumKKT+v9760+tupRoUVPWqZ1+3LoVyvC+03DfhulQQHz6rC3Q==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@edge-runtime/types': 2.2.7
       '@sinclair/typebox': 0.29.6
-      '@types/node': 18.19.4
       ajv: 8.12.0
       cross-fetch: 3.1.6(encoding@0.1.13)
       encoding: 0.1.13
-      typescript: 4.9.5
     dev: false
 
   /@pkgr/utils@2.4.1:
@@ -933,12 +918,6 @@ packages:
 
   /@types/ms@0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
-    dev: false
-
-  /@types/node@18.19.4:
-    resolution: {integrity: sha512-xNzlUhzoHotIsnFoXmJB+yWmBvFZgKCI9TtPIEdYIMM1KWfwuY8zh7wvc1u1OAXlC7dlf6mZVx/s+Y5KfFz19A==}
-    dependencies:
-      undici-types: 5.26.5
     dev: false
 
   /@types/node@20.10.5:
@@ -4778,12 +4757,6 @@ packages:
       is-typed-array: 1.1.12
     dev: true
 
-  /typescript@4.9.5:
-    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
-    dev: false
-
   /typescript@5.3.3:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
     engines: {node: '>=14.17'}
@@ -4800,6 +4773,7 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+    dev: true
 
   /unified@11.0.4:
     resolution: {integrity: sha512-apMPnyLjAX+ty4OrNap7yumyVAMlKx5IWU2wlzzUdYJO9A8f1p9m/gywF/GM2ZDFcjQPrx59Mc90KwmxsoklxQ==}
