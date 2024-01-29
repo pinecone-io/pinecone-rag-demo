@@ -6,15 +6,13 @@ import { Pinecone, PineconeRecord } from "@pinecone-database/pinecone";
 import { ServerlessSpecCloudEnum } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
 import md5 from "md5";
 import { Crawler, Page } from "./crawler";
+import { PINECONE_REGION, PINECONE_CLOUD } from "@/utils/serverlessConfig"
 
 interface SeedOptions {
   splittingMethod: string
   chunkSize: number
   chunkOverlap: number
 }
-
-const PINECONE_REGION = process.env.PINECONE_REGION || 'us-west-2'
-const PINECONE_CLOUD = process.env.PINECONE_CLOUD || 'aws'
 
 type DocumentSplitter = RecursiveCharacterTextSplitter | MarkdownTextSplitter
 
