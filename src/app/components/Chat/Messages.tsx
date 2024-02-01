@@ -32,7 +32,7 @@ export default function Messages({ messages, withContext, context }: { messages:
   }
 
   return (
-    <div className="rounded-lg overflow-y-scroll flex-grow flex flex-col justify-end h-full">
+    <div className="rounded-lg overflow-y-scroll flex-grow flex flex-col justify-end h-full pr-5">
       {messages.length == 0 && (
         <div className="flex h-full w-full justify-center items-center">
           <div className="text-center">
