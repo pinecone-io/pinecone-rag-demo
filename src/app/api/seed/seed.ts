@@ -5,20 +5,26 @@ import { Document, MarkdownTextSplitter, RecursiveCharacterTextSplitter } from "
 import { Pinecone, PineconeRecord } from "@pinecone-database/pinecone";
 import { ServerlessSpecCloudEnum } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
 import md5 from "md5";
-import { Crawler, Page } from "./crawler";
-
+import loadCSVFile from "@/utils/csvLoader";
 interface SeedOptions {
   splittingMethod: string
   chunkSize: number
   chunkOverlap: number
 }
 
+interface Page {
+  url: string;
+  content: string;
+}
+
 const PINECONE_REGION = process.env.PINECONE_REGION || 'us-west-2'
 const PINECONE_CLOUD = process.env.PINECONE_CLOUD || 'aws'
 
+const dataPath = '../assets/data/data.csv'
+
 type DocumentSplitter = RecursiveCharacterTextSplitter | MarkdownTextSplitter
 
-async function seed(url: string, limit: number, indexName: string, options: SeedOptions) {
+async function seed(indexName: string, options: SeedOptions) {
   try {
     // Initialize the Pinecone client
     const pinecone = new Pinecone();
@@ -26,12 +32,8 @@ async function seed(url: string, limit: number, indexName: string, options: Seed
     // Destructure the options object
     const { splittingMethod, chunkSize, chunkOverlap } = options;
 
-    // Create a new Crawler with depth 1 and maximum pages as limit
-    const crawler = new Crawler(1, limit || 100);
-
-    // Crawl the given URL and get the pages
-    const pages = await crawler.crawl(url) as Page[];
-
+    const { data, meta } = await loadCSVFile(dataPath)
+    const pages = data.map((row: any) => ({ url: row.url, content: row.content }))
     // Choose the appropriate document splitter based on the splitting method
     const splitter: DocumentSplitter = splittingMethod === 'recursive' ?
       new RecursiveCharacterTextSplitter({ chunkSize, chunkOverlap }) : new MarkdownTextSplitter({});
@@ -61,6 +63,8 @@ async function seed(url: string, limit: number, indexName: string, options: Seed
 
     // Get the vector embeddings for the documents
     const vectors = await Promise.all(documents.flat().map(embedDocument));
+
+    // 
 
     // Upsert vectors into the Pinecone index
     await chunkedUpsert(index, vectors, '', 10);
