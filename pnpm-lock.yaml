@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@aserto/aserto-node':
-    specifier: ^0.32.1
-    version: 0.32.1
+    specifier: ^0.32.2
+    version: 0.32.2
   '@emotion/react':
     specifier: ^11.11.3
     version: 11.11.3(@types/react@18.2.45)(react@18.2.0)
@@ -38,6 +38,9 @@ dependencies:
   cheerio:
     specifier: ^1.0.0-rc.12
     version: 1.0.0-rc.12
+  crypto:
+    specifier: ^1.0.1
+    version: 1.0.1
   md5:
     specifier: ^2.3.0
     version: 2.3.0
@@ -136,8 +139,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.18
     dev: false
 
-  /@aserto/aserto-node@0.32.1:
-    resolution: {integrity: sha512-aIP3Ju4IDd14aXSlkVjYr+3ylCi7Cx3TCYK/WovpoD7YTM+LSQf5+mcj3hDwZQZwzl456AkOyvM3tiwEUe0whw==}
+  /@aserto/aserto-node@0.32.2:
+    resolution: {integrity: sha512-M/ZZaGObk5dx1IjcY+ns2WX93Vi6hbjI4nOkWU445tyn8z8FEU19oGoDxdSztpePcIWxpO9rWEWseUVcHeycBA==}
     dependencies:
       '@aserto/node-authorizer': 0.20.8
       '@aserto/node-directory': 0.31.3
@@ -1742,6 +1745,11 @@ packages:
 
   /crypt@0.0.2:
     resolution: {integrity: sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==}
+    dev: false
+
+  /crypto@1.0.1:
+    resolution: {integrity: sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==}
+    deprecated: This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in.
     dev: false
 
   /css-select@5.1.0:

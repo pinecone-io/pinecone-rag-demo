@@ -10,7 +10,7 @@ import { Card, ICard } from "./Card";
 import { InfoPopover } from "./InfoPopover";
 import { RecursiveSplittingOptions } from "./RecursiveSplittingOptions";
 import { urls } from "./urls";
-import { clearIndex, crawlDocument } from "./utils";
+import { clearIndex, seedDocuments } from "./utils";
 
 const styles: Record<string, React.CSSProperties> = {
   contextWrapper: {
@@ -76,8 +76,7 @@ export const Sidebar: React.FC = () => {
 
   const handleEmbedAndUpsertClick = async () => {
     setCrawling(true)
-    await crawlDocument(
-      url,
+    await seedDocuments(
       setEntries,
       setCards,
       splittingMethod,
@@ -247,10 +246,10 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-col w-full">
-        {cards.map((card, index) => (
+        {cards && cards.map((card, index) => (
           <Card key={index} card={card} index={index} context={null} id={card.id} />
         ))}
-        {cards.length > 0 && (<div className="text-[#72788D]">End of results</div>)}
+        {cards && cards.length > 0 && (<div className="text-[#72788D]">End of results</div>)}
       </div>
 
     </div>

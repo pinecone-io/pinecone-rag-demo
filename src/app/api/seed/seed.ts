@@ -1,3 +1,4 @@
+'use server';
 import { chunkedUpsert } from '@/services/chunkedUpsert';
 import { getEmbeddings } from "@/services/embeddings";
 import { truncateStringByBytes } from "@/utils/truncateString";
@@ -6,6 +7,8 @@ import { Pinecone, PineconeRecord } from "@pinecone-database/pinecone";
 import { ServerlessSpecCloudEnum } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
 import md5 from "md5";
 import loadCSVFile from "@/utils/csvLoader";
+import { assignRelation } from '@/services/directory';
+import path from 'path';
 interface SeedOptions {
   splittingMethod: string
   chunkSize: number
@@ -20,7 +23,8 @@ interface Page {
 const PINECONE_REGION = process.env.PINECONE_REGION || 'us-west-2'
 const PINECONE_CLOUD = process.env.PINECONE_CLOUD || 'aws'
 
-const dataPath = '../assets/data/data.csv'
+// const dataPath = '../assets/data/acmecorp-data.csv'
+const dataPath = path.join(process.env.PROJECT_ROOT!, 'assets', 'data', 'acmecorp-data.csv');
 
 type DocumentSplitter = RecursiveCharacterTextSplitter | MarkdownTextSplitter
 
@@ -64,7 +68,16 @@ async function seed(indexName: string, options: SeedOptions) {
     // Get the vector embeddings for the documents
     const vectors = await Promise.all(documents.flat().map(embedDocument));
 
-    // 
+    // Create relations in the directory between the user and the documents
+    const user = {
+      id: 'rick@the-citadel.com',
+      email: 'rick@the-citadel.com',
+      name: 'Rick Sanchez',
+      role: 'admin'
+    }
+
+    const relations = await assignRelation(user, vectors.slice(0, 2), 'owns');
+    console.log(relations);
 
     // Upsert vectors into the Pinecone index
     await chunkedUpsert(index, vectors, '', 10);

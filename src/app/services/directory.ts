@@ -2,8 +2,10 @@ import {
     DirectoryServiceV3,
     createAsyncIterable,
     readAsyncIterable,
+    ImportMsgCase,
+    ImportOpCode,
+    objectPropertiesAsStruct
 } from "@aserto/aserto-node";
-import { NotFoundError } from "@aserto/aserto-node";
 import type { PineconeRecord } from "@pinecone-database/pinecone";
 
 const directoryClient = DirectoryServiceV3({
@@ -48,25 +50,26 @@ export interface User {
 }
 
 export const assignRelation = async (user: User, documents: PineconeRecord[], relationName: string) => {
-    const objectCase = "object" as const;
-    const relationCase = "relation" as const;
 
     const operations = documents.map((document, docKey) => {
         const userObject = {
             id: user.id,
             type: "user",
-            properties: {
+            properties: objectPropertiesAsStruct({
                 email: user.email,
                 name: user.name,
                 role: user.role,
-            },
+            }),
             displayName: user.name,
         };
 
         const documentObject = {
             id: document.id,
-            type: "document",
-            properties: document.metadata ? document.metadata : {},
+            type: "resource",
+            properties: document.metadata ? objectPropertiesAsStruct({
+                url: document.metadata.url,
+                hash: document.metadata.hash,
+            }) : objectPropertiesAsStruct({}),
             displayName: document.metadata && document.metadata.title ? document.metadata.title as string : "",
         };
 
@@ -74,31 +77,31 @@ export const assignRelation = async (user: User, documents: PineconeRecord[], re
             subjectId: user.id,
             subjectType: "user",
             objectId: document.id,
-            objectType: "document",
+            objectType: "resource",
             relation: relationName,
         };
 
         const objectOperations: any[] = [
             {
-                opCode: docKey,
+                opCode: ImportOpCode.SET,
                 msg: {
-                    case: objectCase,
+                    case: ImportMsgCase.OBJECT,
                     value: userObject,
                 },
             },
             {
-                opCode: docKey,
+                opCode: ImportOpCode.SET,
                 msg: {
-                    case: objectCase,
+                    case: ImportMsgCase.OBJECT,
                     value: documentObject,
                 },
             }
         ];
 
         const relationOperation: any = {
-            opCode: docKey,
+            opCode: ImportOpCode.SET,
             msg: {
-                case: relationCase,
+                case: ImportMsgCase.RELATION,
                 value: userDocumentRelation,
             },
         };
@@ -106,9 +109,11 @@ export const assignRelation = async (user: User, documents: PineconeRecord[], re
         return [...objectOperations, relationOperation];
     }).flat();
 
-    const importRequest = createAsyncIterable(operations);
+
     try {
-        await directoryClient.import(importRequest);
+        const importRequest = createAsyncIterable(operations);
+        const resp = await directoryClient.import(importRequest);
+        return await (readAsyncIterable(resp))
     } catch (error) {
         console.error("Error importing request: ", error);
         throw error;

@@ -1,24 +1,21 @@
 import { ICard } from "./Card";
 import { IUrlEntry } from "./UrlButton";
 
-export async function crawlDocument(
-  url: string,
+export async function seedDocuments(
   setEntries: React.Dispatch<React.SetStateAction<IUrlEntry[]>>,
   setCards: React.Dispatch<React.SetStateAction<ICard[]>>,
   splittingMethod: string,
   chunkSize: number,
   overlap: number
 ): Promise<void> {
-  setEntries((seeded: IUrlEntry[]) =>
-    seeded.map((seed: IUrlEntry) =>
-      seed.url === url ? { ...seed, loading: true } : seed
-    )
-  );
-  const response = await fetch("/api/crawl", {
+  // setEntries((seeded: IUrlEntry[]) =>
+  //   seeded.map((seed: IUrlEntry) => { ...seed, loading: true })
+
+  // );
+  const response = await fetch("/api/seed", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      url,
       options: {
         splittingMethod,
         chunkSize,
@@ -31,11 +28,11 @@ export async function crawlDocument(
 
   setCards(documents);
 
-  setEntries((prevEntries: IUrlEntry[]) =>
-    prevEntries.map((entry: IUrlEntry) =>
-      entry.url === url ? { ...entry, seeded: true, loading: false } : entry
-    )
-  );
+  // setEntries((prevEntries: IUrlEntry[]) =>
+  //   prevEntries.map((entry: IUrlEntry) =>
+  //     entry.url === url ? { ...entry, seeded: true, loading: false } : entry
+  //   )
+  // );
 }
 
 export async function clearIndex(
