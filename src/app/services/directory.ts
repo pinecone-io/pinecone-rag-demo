@@ -6,7 +6,7 @@ import {
     ImportOpCode,
     objectPropertiesAsStruct
 } from "@aserto/aserto-node";
-import type { PineconeRecord } from "@pinecone-database/pinecone";
+import type { PineconeRecord, ScoredPineconeRecord } from "@pinecone-database/pinecone";
 
 const directoryClient = DirectoryServiceV3({
     url: process.env.ASERTO_DIRECTORY_SERVICE_URL,
@@ -46,7 +46,13 @@ export interface User {
     id: string;
     email: string;
     name: string;
-    role: string;
+    roles: string[];
+}
+
+export enum Permission {
+    READ = "read",
+    WRITE = "write",
+    DELETE = "delete",
 }
 
 export const assignRelation = async (user: User, documents: PineconeRecord[], relationName: string) => {
@@ -58,7 +64,7 @@ export const assignRelation = async (user: User, documents: PineconeRecord[], re
             properties: objectPropertiesAsStruct({
                 email: user.email,
                 name: user.name,
-                role: user.role,
+                roles: user.roles,
             }),
             displayName: user.name,
         };
@@ -118,4 +124,20 @@ export const assignRelation = async (user: User, documents: PineconeRecord[], re
         console.error("Error importing request: ", error);
         throw error;
     }
+}
+
+
+export const getFilteredMatches = async (user: User, matches: ScoredPineconeRecord[], permission: Permission) => {
+    const checks = await Promise.all(matches.map(async (match) => {
+        const response = await directoryClient.checkPermission({
+            subjectId: user.id,
+            subjectType: "user",
+            objectId: match.id,
+            objectType: "resource",
+            permission: permission,
+        });
+        console.log("response", response)
+        return response ? response.check : false
+    }));
+    return matches.filter((match, index) => checks[index]);
 }

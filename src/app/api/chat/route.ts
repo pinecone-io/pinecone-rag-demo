@@ -11,7 +11,7 @@ const config = new Configuration({
 const openai = new OpenAIApi(config)
 
 // IMPORTANT! Set the runtime to edge
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(req: Request) {
   try {
@@ -30,6 +30,7 @@ export async function POST(req: Request) {
 
     // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
     const contextText = docs.join("\n").substring(0, 3000)
+    console.log("contextText", contextText)
 
     const prompt = [
       {
@@ -58,7 +59,7 @@ export async function POST(req: Request) {
 
     // Ask OpenAI for a streaming chat completion given the prompt
     const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       stream: true,
       messages: [...prompt, ...sanitizedMessages.filter((message: Message) => message.role === 'user')]
     })

@@ -69,14 +69,25 @@ async function seed(indexName: string, options: SeedOptions) {
     const vectors = await Promise.all(documents.flat().map(embedDocument));
 
     // Create relations in the directory between the user and the documents
-    const user = {
+    const rick = {
       id: 'rick@the-citadel.com',
+      picture: "https://www.topaz.sh/assets/templates/citadel/img/Rick%20Sanchez.jpg",
       email: 'rick@the-citadel.com',
       name: 'Rick Sanchez',
-      role: 'admin'
+      roles: ['admin']
     }
+    const morty = {
+      "id": "morty@the-citadel.com",
+      "name": "Morty Smith",
+      "email": "morty@the-citadel.com",
+      "picture": "https://www.topaz.sh/assets/templates/citadel/img/Morty%20Smith.jpg",
+      "roles": [
+        "editor"
+      ],
+    }
+    const user = morty
 
-    const relations = await assignRelation(user, vectors.slice(0, 2), 'owns');
+    const relations = await assignRelation(user, vectors.slice(3, 5), 'owner');
     console.log(relations);
 
     // Upsert vectors into the Pinecone index
