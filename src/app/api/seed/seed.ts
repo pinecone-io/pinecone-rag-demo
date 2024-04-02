@@ -85,9 +85,9 @@ async function seed(indexName: string, options: SeedOptions) {
         "editor"
       ],
     }
-    const user = morty
+    const user = rick
 
-    const relations = await assignRelation(user, vectors.slice(3, 5), 'owner');
+    const relations = await assignRelation(user, vectors, 'owner');
     console.log(relations);
 
     // Upsert vectors into the Pinecone index

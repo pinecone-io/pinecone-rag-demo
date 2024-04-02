@@ -14,7 +14,7 @@ export interface ChatInterface {
 interface ChatProps {
     withContext: boolean;
     setContext: (data: { context: PineconeRecord[] }[]) => void;
-    context?: { context: PineconeRecord[] }[] | null;
+    context?: { context: PineconeRecord[], accessNotice: boolean }[] | null;
     ref: Ref<ChatInterface>
 }
 

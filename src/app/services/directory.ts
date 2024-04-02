@@ -128,15 +128,25 @@ export const assignRelation = async (user: User, documents: PineconeRecord[], re
 
 
 export const getFilteredMatches = async (user: User, matches: ScoredPineconeRecord[], permission: Permission) => {
+    matches.forEach(match => {
+        console.log(match.id);
+    });
     const checks = await Promise.all(matches.map(async (match) => {
-        const response = await directoryClient.checkPermission({
+        const permissionRequest = {
             subjectId: user.id,
             subjectType: "user",
             objectId: match.id,
             objectType: "resource",
-            permission: permission,
-        });
-        console.log("response", response)
+            permission: "can_read",
+        }
+        // console.log(permissionRequest)
+
+        const response = await directoryClient.checkPermission(permissionRequest);
+        if (match.id === "85ab5a7cda1429f02e663248ef4a2f6f") {
+            console.log("permissionRequest", permissionRequest)
+            console.log("response", response)
+        }
+
         return response ? response.check : false
     }));
     return matches.filter((match, index) => checks[index]);

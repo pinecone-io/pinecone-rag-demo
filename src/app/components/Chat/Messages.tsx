@@ -4,11 +4,13 @@ import { UserIcon } from "@/assets/icons/user";
 import { PineconeLogoSvg } from "@/assets/svg/pineconeLogo";
 import { Typography } from "@mui/material";
 import Popover from "@mui/material/Popover";
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import type { PineconeRecord } from "@pinecone-database/pinecone";
 import { Message } from "ai";
 import { useRef, useState } from "react";
 
-export default function Messages({ messages, withContext, context }: { messages: Message[], withContext: boolean, context?: { context: PineconeRecord[] }[] }) {
+export default function Messages({ messages, withContext, context }: { messages: Message[], withContext: boolean, context?: { context: PineconeRecord[], accessNotice: boolean }[] }) {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [anchorEls, setAnchorEls] = useState<{ [key: string]: HTMLButtonElement | null }>({});
 
@@ -73,6 +75,7 @@ export default function Messages({ messages, withContext, context }: { messages:
                 <div>{message.content}</div>
                 {entry && entry.context.length > 0 && (
                   <div className="flex text-xs">
+                    <div>{entry.accessNotice ? <VisibilityOffIcon className="text-xs mr-1" /> : <VisibilityIcon className="text-xs mr-1" />}</div>
                     <div className="text-[#72788D]">Source:</div>
                     {entry.context.map((chunk, index) => {
                       return (

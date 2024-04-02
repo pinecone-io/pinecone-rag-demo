@@ -1,3 +1,4 @@
+import { ContextResponse, isContextResponse } from './../../services/context';
 import { Metadata, getContext } from '@/services/context'
 import type { PineconeRecord } from '@pinecone-database/pinecone'
 import { Message, OpenAIStream, StreamingTextResponse, experimental_StreamData } from 'ai'
@@ -24,13 +25,11 @@ export async function POST(req: Request) {
     // Get the context from the last message
     const context = withContext ? await getContext(lastMessage.content, '', 3000, 0.8, false) : ''
 
-    console.log("withContext", context.length)
-
-    const docs = (withContext && context.length > 0) ? (context as PineconeRecord[]).map(match => (match.metadata as Metadata).chunk) : [];
+    const docs = isContextResponse(context) && (withContext && context.documents.length > 0) ? (context.documents as PineconeRecord[]).map(match => (match.metadata as Metadata).chunk) : [];
 
     // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
     const contextText = docs.join("\n").substring(0, 3000)
-    console.log("contextText", contextText)
+
 
     const prompt = [
       {
@@ -77,7 +76,9 @@ export async function POST(req: Request) {
 
     if (withContext) {
       data.append({
-        context: [...context as PineconeRecord[]]
+        context: isContextResponse(context) && [...context.documents as PineconeRecord[]],
+        accessNotice: isContextResponse(context) && context.accessNotice,
+        noMatches: isContextResponse(context) && context.noMatches
       })
 
     }
