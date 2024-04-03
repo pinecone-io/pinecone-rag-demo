@@ -3,6 +3,7 @@ import { Metadata, getContext } from '@/services/context'
 import type { PineconeRecord } from '@pinecone-database/pinecone'
 import { Message, OpenAIStream, StreamingTextResponse, experimental_StreamData } from 'ai'
 import { Configuration, OpenAIApi } from 'openai-edge'
+import { auth, currentUser } from "@clerk/nextjs";
 
 
 // Create an OpenAI API client (that's edge friendly!)
@@ -16,6 +17,9 @@ export const runtime = 'nodejs'
 
 export async function POST(req: Request) {
   try {
+
+    const user = await currentUser();
+    console.log("USER", user)
 
     const { messages, withContext, messageId } = await req.json()
     // Get the last message

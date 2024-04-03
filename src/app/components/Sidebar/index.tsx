@@ -4,13 +4,18 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CircularProgress from '@mui/material/CircularProgress';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "../Header";
 import { Card, ICard } from "./Card";
 import { InfoPopover } from "./InfoPopover";
 import { RecursiveSplittingOptions } from "./RecursiveSplittingOptions";
 import { urls } from "./urls";
 import { clearIndex, seedDocuments } from "./utils";
+import { UserButton } from "@clerk/nextjs";
+
+
+import { useUser } from "@clerk/nextjs";
+
 
 const styles: Record<string, React.CSSProperties> = {
   contextWrapper: {
@@ -59,6 +64,21 @@ export const Sidebar: React.FC = () => {
   const [crawlingDoneVisible, setCrawlingDoneVisible] = useState<boolean>(false)
 
   const { refreshIndex } = useContext(AppContext);
+
+  const { isLoaded, isSignedIn, user } = useUser();
+
+
+
+  // useEffect(() => {
+  //   const loadUser = async () => {
+  //     const authenticatedUser = await currentUser();
+
+  //     setUser(authenticatedUser);
+  //   };
+
+  //   loadUser();
+  // }, [user]);
+
 
   const handleUrlChange = (event: SelectChangeEvent<typeof url>) => {
     const {
@@ -113,6 +133,11 @@ export const Sidebar: React.FC = () => {
     </MenuItem>
   ));
 
+  if (!isLoaded || !isSignedIn) {
+    return null;
+  }
+
+
 
   return (
     <div
@@ -127,8 +152,14 @@ export const Sidebar: React.FC = () => {
       </div>
       <div className="flex flex-column w-full" style={{ ...styles.textHeaderWrapper, flexDirection: "column", }}>
         <div className="mb-6 w-full">
-          <h4 style={styles.h4}>Select demo url to index</h4>
-          <Select className="w-full" value={url} data-testid="url-selector" onChange={handleUrlChange} IconComponent={ExpandMoreIcon} MenuProps={{
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><b>{user.emailAddresses.join(",")}</b><UserButton /></div>
+            <div>
+
+            </div>
+          </div>
+          {/* <h4 style={styles.h4}>Select demo url to index</h4> */}
+          {/* <Select className="w-full" value={url} data-testid="url-selector" onChange={handleUrlChange} IconComponent={ExpandMoreIcon} MenuProps={{
             keepMounted: true,
             PaperProps: {
               style: {
@@ -139,7 +170,7 @@ export const Sidebar: React.FC = () => {
             },
           }}>
             {menuItems}
-          </Select>
+          </Select> */}
         </div>
         <div className="mb-6 w-full">
           <h4 style={styles.h4} className="flex items-center">
@@ -149,7 +180,7 @@ export const Sidebar: React.FC = () => {
               infoText="The chunking method determines how documents are split into smaller chunks for vector embedding to accommodate size limits. Overlapping content between chunks preserves context, improving search relevance."
             />
           </h4>
-          <Select IconComponent={ExpandMoreIcon} value={splittingMethod} className="w-full" onChange={handleSplittingMethodChange}
+          {/* <Select IconComponent={ExpandMoreIcon} value={splittingMethod} className="w-full" onChange={handleSplittingMethodChange}
             renderValue={(value) => {
               if (value === "markdown") {
                 return "Markdown Chunking";
@@ -166,7 +197,7 @@ export const Sidebar: React.FC = () => {
                 }
               }
             }} >
-            {/* Using tailwind here resulted in broken css when deployed on Vercel */}
+            
             <MenuItem value="markdown" style={{ maxWidth: '100%', overflow: 'auto', whiteSpace: 'normal' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div>Markdown chunking</div>
@@ -180,7 +211,7 @@ export const Sidebar: React.FC = () => {
               </div>
 
             </MenuItem>
-          </Select>
+          </Select> */}
         </div>
         {splittingMethod === "recursive" && (
           <RecursiveSplittingOptions

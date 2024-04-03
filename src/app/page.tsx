@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import { FaGithub } from 'react-icons/fa';
 import AppContext from "./appContext";
 
+
 const Page: React.FC = () => {
   const [context, setContext] = useState<{ context: PineconeRecord[] }[] | null>(null);
   const { totalRecords, refreshIndex } = useRefreshIndex();
