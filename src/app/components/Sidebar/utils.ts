@@ -1,25 +1,28 @@
-import { ICard } from "./Card";
-import { IUrlEntry } from "./UrlButton";
+import { ICard } from './Card';
+import { IUrlEntry } from './UrlButton';
+import { UserDataAssignments } from '../Sidebar/Users';
 
 export async function seedDocuments(
   setEntries: React.Dispatch<React.SetStateAction<IUrlEntry[]>>,
   setCards: React.Dispatch<React.SetStateAction<ICard[]>>,
   splittingMethod: string,
   chunkSize: number,
-  overlap: number
+  overlap: number,
+  usersDataAssignment: UserDataAssignments
 ): Promise<void> {
   // setEntries((seeded: IUrlEntry[]) =>
   //   seeded.map((seed: IUrlEntry) => { ...seed, loading: true })
 
   // );
-  const response = await fetch("/api/seed", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/seed', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       options: {
         splittingMethod,
         chunkSize,
         overlap,
+        usersDataAssignment
       },
     }),
   });
@@ -39,9 +42,9 @@ export async function clearIndex(
   setEntries: React.Dispatch<React.SetStateAction<IUrlEntry[]>>,
   setCards: React.Dispatch<React.SetStateAction<ICard[]>>
 ) {
-  const response = await fetch("/api/clearIndex", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/clearIndex', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
   });
 
   if (response.ok) {

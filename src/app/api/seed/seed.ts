@@ -1,23 +1,43 @@
 'use server';
 import { chunkedUpsert } from '@/services/chunkedUpsert';
-import { getEmbeddings } from "@/services/embeddings";
-import { truncateStringByBytes } from "@/utils/truncateString";
-import { Document, MarkdownTextSplitter, RecursiveCharacterTextSplitter } from "@pinecone-database/doc-splitter";
-import { Pinecone, PineconeRecord } from "@pinecone-database/pinecone";
+import { getEmbeddings } from '@/services/embeddings';
+import { truncateStringByBytes } from '@/utils/truncateString';
+import { Document, MarkdownTextSplitter, RecursiveCharacterTextSplitter } from '@pinecone-database/doc-splitter';
+import { Pinecone, PineconeRecord, type RecordMetadata } from '@pinecone-database/pinecone';
 import { ServerlessSpecCloudEnum } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
-import md5 from "md5";
-import loadCSVFile from "@/utils/csvLoader";
+import md5 from 'md5';
+import loadCSVFile from '@/utils/csvLoader';
 import { assignRelation } from '@/services/directory';
 import path from 'path';
+import { clerkClient } from '@clerk/nextjs';
+
+
+interface UserDataAssignments {
+  [key: string]: {
+    [key: string]: boolean
+  }
+}
+
 interface SeedOptions {
   splittingMethod: string
   chunkSize: number
-  chunkOverlap: number
+  chunkOverlap: number,
+  usersDataAssignment: UserDataAssignments
 }
 
 interface Page {
   url: string;
   content: string;
+  category: string;
+  title: string;
+}
+
+export interface CategorizedRecordMetadata extends RecordMetadata {
+  url: string;
+  title: string;
+  text: string;
+  category: string;
+  chunk: string;
 }
 
 const PINECONE_REGION = process.env.PINECONE_REGION || 'us-west-2'
@@ -28,22 +48,46 @@ const dataPath = path.join(process.env.PROJECT_ROOT!, 'assets', 'data', 'acmecor
 
 type DocumentSplitter = RecursiveCharacterTextSplitter | MarkdownTextSplitter
 
+function filterRecordsByUserAssignments(
+  user: string,
+  records: PineconeRecord<CategorizedRecordMetadata>[],
+  userDataAssignments: UserDataAssignments
+): PineconeRecord<CategorizedRecordMetadata>[] {
+  // Filter out the records that include the UserDataAssignments marked as true for the given user
+  return records.filter(record => {
+    const userAssignments = userDataAssignments[user];
+    if (!userAssignments) {
+      return false;
+    }
+  
+    return Object.keys(userAssignments).some(assignment => userAssignments[assignment] && record.metadata?.category === assignment);
+  });
+}
+
 async function seed(indexName: string, options: SeedOptions) {
   try {
     // Initialize the Pinecone client
     const pinecone = new Pinecone();
 
     // Destructure the options object
-    const { splittingMethod, chunkSize, chunkOverlap } = options;
+    const { splittingMethod, chunkSize, chunkOverlap, usersDataAssignment } = options;
 
     const { data, meta } = await loadCSVFile(dataPath)
-    const pages = data.map((row: any) => ({ url: row.url, content: row.content }))
-    // Choose the appropriate document splitter based on the splitting method
+    
+    const pages: Page[] = data.map((row: any) => ({ 
+      url: row.url,
+      content: row.content,
+      category: row.category,
+      title: row.title
+    }))
+    // // Choose the appropriate document splitter based on the splitting method
     const splitter: DocumentSplitter = splittingMethod === 'recursive' ?
-      new RecursiveCharacterTextSplitter({ chunkSize, chunkOverlap }) : new MarkdownTextSplitter({});
+      new RecursiveCharacterTextSplitter({ chunkSize,
+        chunkOverlap }) : new MarkdownTextSplitter({});
 
     // Prepare documents by splitting the pages
     const documents = await Promise.all(pages.map(page => prepareDocument(page, splitter)));
+    
 
     // Create Pinecone index if it does not exist
     const indexList = await pinecone.listIndexes();
@@ -64,65 +108,44 @@ async function seed(indexName: string, options: SeedOptions) {
     }
 
     const index = pinecone.Index(indexName)
-
-    // Get the vector embeddings for the documents
     const vectors = await Promise.all(documents.flat().map(embedDocument));
 
-    // Create relations in the directory between the user and the documents
-    const rick = {
-      id: 'rick@the-citadel.com',
-      picture: "https://www.topaz.sh/assets/templates/citadel/img/Rick%20Sanchez.jpg",
-      email: 'rick@the-citadel.com',
-      name: 'Rick Sanchez',
-      roles: ['admin']
-    }
-    const morty = {
-      "id": "morty@the-citadel.com",
-      "name": "Morty Smith",
-      "email": "morty@the-citadel.com",
-      "picture": "https://www.topaz.sh/assets/templates/citadel/img/Morty%20Smith.jpg",
-      "roles": [
-        "editor"
-      ],
-    }
-    const user = rick
-
-    const relations = await assignRelation(user, vectors, 'owner');
-    console.log(relations);
-
+    await Promise.all(Object.keys(usersDataAssignment).map(async (userId) => {
+      const userVectors = filterRecordsByUserAssignments(userId, vectors, usersDataAssignment)
+      const userObject = await clerkClient.users.getUser(userId);
+      return assignRelation(userObject, userVectors, 'owner');
+    }));
     // Upsert vectors into the Pinecone index
     await chunkedUpsert(index, vectors, '', 10);
 
     // Return the first document
     return documents[0];
   } catch (error) {
-    console.error("Error seeding:", error);
+    console.error('Error seeding:', error);
     throw error;
   }
 }
 
-async function embedDocument(doc: Document): Promise<PineconeRecord> {
+async function embedDocument(doc: Document): Promise<PineconeRecord<CategorizedRecordMetadata>> {
   try {
-    // Generate OpenAI embeddings for the document content
     const embedding = await getEmbeddings(doc.pageContent);
-
-    // Create a hash of the document content
     const hash = md5(doc.pageContent);
 
-    // Return the vector embedding object
+    const metadata: CategorizedRecordMetadata = {      
+      url: doc.metadata.url as string,
+      text: doc.metadata.text as string,
+      category: doc.metadata.category as string,
+      chunk: doc.pageContent,
+      title: doc.metadata.title as string
+    };
     return {
-      id: hash, // The ID of the vector is the hash of the document content
-      values: embedding, // The vector values are the OpenAI embeddings
-      metadata: { // The metadata includes details about the document
-        chunk: doc.pageContent, // The chunk of text that the vector represents
-        text: doc.metadata.text as string, // The text of the document
-        url: doc.metadata.url as string, // The URL where the document was found
-        hash: doc.metadata.hash as string // The hash of the document content
-      }
-    } as PineconeRecord;
+      id: hash,
+      values: embedding,
+      metadata
+    } as PineconeRecord<CategorizedRecordMetadata>;
   } catch (error) {
-    console.log("Error embedding document: ", error)
-    throw error
+    console.error('Error embedding document: ', error);
+    throw error;
   }
 }
 
@@ -135,9 +158,11 @@ async function prepareDocument(page: Page, splitter: DocumentSplitter): Promise<
     new Document({
       pageContent,
       metadata: {
+        title: page.title,
         url: page.url,
         // Truncate the text to a maximum byte length
-        text: truncateStringByBytes(pageContent, 36000)
+        text: truncateStringByBytes(pageContent, 36000),
+        category: page.category
       },
     }),
   ]);
@@ -154,8 +179,5 @@ async function prepareDocument(page: Page, splitter: DocumentSplitter): Promise<
     };
   });
 }
-
-
-
 
 export default seed;

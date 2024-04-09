@@ -1,4 +1,4 @@
-import { Pinecone, type ScoredPineconeRecord } from "@pinecone-database/pinecone";
+import { Pinecone, type ScoredPineconeRecord } from '@pinecone-database/pinecone';
 
 export type Metadata = {
   url: string,
@@ -21,7 +21,6 @@ const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, name
 
   // Get the namespace
   const pineconeNamespace = index.namespace(namespace ?? '')
-  // console.log("embeddings", JSON.stringify(embeddings))
 
   try {
     // Query the index with the defined request
@@ -33,7 +32,7 @@ const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, name
     return queryResult.matches || []
   } catch (e) {
     // Log the error and throw it
-    console.log("Error querying embeddings: ", e)
+    console.error('Error querying embeddings: ', e)
     throw new Error(`Error querying embeddings: ${e}`)
   }
 }

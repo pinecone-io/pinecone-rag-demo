@@ -1,14 +1,18 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { authMiddleware } from "@clerk/nextjs";
+import { authMiddleware } from '@clerk/nextjs';
 
 export default authMiddleware({});
 
 export const config = {
-    matcher: ["/((?!.+.[w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+  middleware: {
+    clerk: {
+      exclude: ['/favicon.ico'],
+    },
+  },
 };
-
 // export function middleware(request: NextRequest) {
 //     const requiredEnvVars = ['OPENAI_API_KEY', 'PINECONE_API_KEY', 'PINECONE_REGION', 'PINECONE_INDEX'];
 //     requiredEnvVars.forEach(envVar => {

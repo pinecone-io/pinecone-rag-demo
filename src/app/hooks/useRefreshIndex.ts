@@ -1,21 +1,22 @@
 import { useState } from 'react';
 
 const useRefreshIndex = () => {
-    const [totalRecords, setTotalRecords] = useState<number>(0);
+  const [totalRecords, setTotalRecords] = useState<number>(0);
 
-    const refreshIndex = async () => {
-        const response = await fetch("/api/checkIndex", {
-            method: "POST",
-        });
-        try {
-            const stats = await response.json();
-            setTotalRecords(stats.totalRecordCount);
-        } catch (e) {
-            console.log(e)
-        }
+  const refreshIndex = async () => {
+    const response = await fetch('/api/checkIndex', {
+      method: 'POST',
+    });
+    try {
+      const stats = await response.json();
+      setTotalRecords(stats.totalRecordCount);
+    } catch (e) {
+      console.error(e)
     }
+  }
 
-    return { totalRecords, refreshIndex };
+  return { totalRecords,
+    refreshIndex };
 }
 
 export default useRefreshIndex;

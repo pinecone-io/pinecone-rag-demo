@@ -1,37 +1,38 @@
-import AppContext from "@/appContext";
-import { Button } from "@material-tailwind/react";
+import AppContext from '@/appContext';
+import { Button } from '@material-tailwind/react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CircularProgress from '@mui/material/CircularProgress';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import React, { useContext, useEffect, useState } from "react";
-import Header from "../Header";
-import { Card, ICard } from "./Card";
-import { InfoPopover } from "./InfoPopover";
-import { RecursiveSplittingOptions } from "./RecursiveSplittingOptions";
-import { urls } from "./urls";
-import { clearIndex, seedDocuments } from "./utils";
-import { UserButton } from "@clerk/nextjs";
+import React, { useContext, useEffect, useState } from 'react';
+import Header from '../Header';
+import { Card, ICard } from './Card';
+import { InfoPopover } from './InfoPopover';
+import { RecursiveSplittingOptions } from './RecursiveSplittingOptions';
+import { urls } from './urls';
+import { clearIndex, seedDocuments } from './utils';
+import { UserButton } from '@clerk/nextjs';
 
 
-import { useUser } from "@clerk/nextjs";
+import { useUser } from '@clerk/nextjs';
+import { ListAllUsers, type UserDataAssignments } from './Users';
 
 
 const styles: Record<string, React.CSSProperties> = {
   contextWrapper: {
-    display: "flex",
-    padding: "var(--spacer-huge, 64px) var(--spacer-m, 32px) var(--spacer-m, 32px) var(--spacer-m, 32px)",
-    alignItems: "flex-start",
-    gap: "var(--Spacing-0, 0px)",
-    alignSelf: "stretch",
-    backgroundColor: "#FBFBFC",
+    display: 'flex',
+    padding: 'var(--spacer-huge, 64px) var(--spacer-m, 32px) var(--spacer-m, 32px) var(--spacer-m, 32px)',
+    alignItems: 'flex-start',
+    gap: 'var(--Spacing-0, 0px)',
+    alignSelf: 'stretch',
+    backgroundColor: '#FBFBFC',
     fontSize: 14
   },
   textHeaderWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    alignSelf: "stretch"
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    alignSelf: 'stretch'
   },
   entryUrl: {
     fontSize: 'small',
@@ -39,10 +40,12 @@ const styles: Record<string, React.CSSProperties> = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    maxWidth: "400px"
+    maxWidth: '400px'
   },
   h4: {
-    fontWeight: 600, marginBottom: 8, fontSize: 16
+    fontWeight: 600,
+    marginBottom: 8,
+    fontSize: 16
   },
   h7: {
     fontSize: 12,
@@ -55,30 +58,51 @@ const styles: Record<string, React.CSSProperties> = {
 export const Sidebar: React.FC = () => {
   const [entries, setEntries] = useState(urls);
   const [cards, setCards] = useState<ICard[]>([]);
-  const [splittingMethod, setSplittingMethod] = useState<string>("markdown");
+  const [splittingMethod, setSplittingMethod] = useState<string>('markdown');
   const [chunkSize, setChunkSize] = useState<number>(256);
   const [overlap, setOverlap] = useState<number>(1);
   const [url, setUrl] = useState<string>(entries[0].url);
   const [clearIndexComplete, setClearIndexCompleteMessageVisible] = useState<boolean>(false)
   const [crawling, setCrawling] = useState<boolean>(false)
   const [crawlingDoneVisible, setCrawlingDoneVisible] = useState<boolean>(false)
+  const [usersDataAssignment, setUserDataAssignments] = useState<UserDataAssignments>({});
+  const [isAdmin, setIsAdmin] = useState<boolean>(false)
 
   const { refreshIndex } = useContext(AppContext);
 
   const { isLoaded, isSignedIn, user } = useUser();
 
+  useEffect(() => {
+    const getIsAdmin = async () => {
+      try {
+        const response = await fetch('/api/isAdmin', {
+          method: 'POST'
+        });
+        const data = await response.json();
+        setIsAdmin(data.isAdmin);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    }
 
+    getIsAdmin();
+  }, []);
 
-  // useEffect(() => {
-  //   const loadUser = async () => {
-  //     const authenticatedUser = await currentUser();
-
-  //     setUser(authenticatedUser);
-  //   };
-
-  //   loadUser();
-  // }, [user]);
-
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('/api/users', {
+          method: 'POST'
+        });
+        const data = await response.json();
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+    if (isAdmin){
+      fetchUsers();
+    }    
+  }, [isAdmin]);
 
   const handleUrlChange = (event: SelectChangeEvent<typeof url>) => {
     const {
@@ -101,14 +125,14 @@ export const Sidebar: React.FC = () => {
       setCards,
       splittingMethod,
       chunkSize,
-      overlap
+      overlap,
+      usersDataAssignment
     )
 
     setCrawling(false)
     setCrawlingDoneVisible(true)
     setTimeout(() => {
-      setCrawlingDoneVisible(false)
-      console.log("it's time")
+      setCrawlingDoneVisible(false)      
       refreshIndex()
     }, 2000)
   }
@@ -128,7 +152,8 @@ export const Sidebar: React.FC = () => {
       key={key} value={entry.url}
     ><div className="flex-col" data-testid={entry.url}>
         <div>{entry.title}</div>
-        <div style={{ ...styles.entryUrl, whiteSpace: 'nowrap' as 'nowrap' }}>{entry.url}</div>
+        <div style={{ ...styles.entryUrl,
+          whiteSpace: 'nowrap' as 'nowrap' }}>{entry.url}</div>
       </div>
     </MenuItem>
   ));
@@ -142,22 +167,30 @@ export const Sidebar: React.FC = () => {
   return (
     <div
       className="w-full"
-      style={{ ...styles.contextWrapper, flexDirection: "column" as "column" }}
+      style={{ ...styles.contextWrapper,
+        flexDirection: 'column' as 'column' }}
     >
-      <div style={{ ...styles.textHeaderWrapper, flexDirection: "column" as "column" }} className="w-full">
+      <div style={{ ...styles.textHeaderWrapper,
+        flexDirection: 'column' as 'column' }} className="w-full">
         <Header />
-        <div style={{ marginTop: 24, marginBottom: 24 }}>
+        <div style={{ marginTop: 24,
+          marginBottom: 24 }}>
           This RAG chatbot uses Pinecone and Vercel&apos;s AI SDK to demonstrate a URL crawl, data chunking and embedding, and semantic questioning.
         </div>
       </div>
-      <div className="flex flex-column w-full" style={{ ...styles.textHeaderWrapper, flexDirection: "column", }}>
+      <div className="flex flex-column w-full" style={{ ...styles.textHeaderWrapper,
+        flexDirection: 'column', }}>
         <div className="mb-6 w-full">
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><b>{user.emailAddresses.join(",")}</b><UserButton /></div>
+            <div style={{ display: 'flex',
+              justifyContent: 'space-between' }}><b>{user.emailAddresses.join(',')}</b><UserButton /></div>
             <div>
 
             </div>
           </div>
+          {isAdmin && <div>
+            <ListAllUsers updateUserDataAssignments={setUserDataAssignments}/>
+          </div>}
           {/* <h4 style={styles.h4}>Select demo url to index</h4> */}
           {/* <Select className="w-full" value={url} data-testid="url-selector" onChange={handleUrlChange} IconComponent={ExpandMoreIcon} MenuProps={{
             keepMounted: true,
@@ -173,13 +206,13 @@ export const Sidebar: React.FC = () => {
           </Select> */}
         </div>
         <div className="mb-6 w-full">
-          <h4 style={styles.h4} className="flex items-center">
+          {/* <h4 style={styles.h4} className="flex items-center">
             <div>Chunking method</div>
             <InfoPopover
               className="ml-1"
               infoText="The chunking method determines how documents are split into smaller chunks for vector embedding to accommodate size limits. Overlapping content between chunks preserves context, improving search relevance."
             />
-          </h4>
+          </h4> */}
           {/* <Select IconComponent={ExpandMoreIcon} value={splittingMethod} className="w-full" onChange={handleSplittingMethodChange}
             renderValue={(value) => {
               if (value === "markdown") {
@@ -213,7 +246,7 @@ export const Sidebar: React.FC = () => {
             </MenuItem>
           </Select> */}
         </div>
-        {splittingMethod === "recursive" && (
+        {splittingMethod === 'recursive' && (
           <RecursiveSplittingOptions
             chunkSize={chunkSize}
             setChunkSize={setChunkSize}
@@ -221,32 +254,37 @@ export const Sidebar: React.FC = () => {
             setOverlap={setOverlap}
           />
         )}
-        <Button
-          className={`mb-6 duration-100 button-primary ${crawlingDoneVisible ? "bg-green-500" : "bg-blue-700"} text-white font-medium px-8 py-3 transition-all duration-500 ease-in-out`}
+        {isAdmin && <Button
+          className={`mb-6 duration-100 button-primary ${crawlingDoneVisible ? 'bg-green-500' : 'bg-blue-700'} text-white font-medium px-8 py-3 transition-all duration-500 ease-in-out`}
           onClick={handleEmbedAndUpsertClick}
-          style={{ backgroundColor: `${crawlingDoneVisible ? "#15B077" : "#1B17F5"}`, textTransform: 'none', fontSize: 14, borderRadius: 4, padding: '12px 22px', fontWeight: 400 }}
+          style={{ backgroundColor: `${crawlingDoneVisible ? '#15B077' : '#1B17F5'}`,
+            textTransform: 'none',
+            fontSize: 14,
+            borderRadius: 4,
+            padding: '12px 22px',
+            fontWeight: 400 }}
           placeholder=""
         >
-          {!crawling ? (crawlingDoneVisible ? "Success" : "Embed and upsert") : (<div className="flex">
+          {!crawling ? (crawlingDoneVisible ? 'Success' : 'Embed and upsert') : (<div className="flex">
             <CircularProgress size={20} sx={{
-              color: "white",
+              color: 'white',
             }} />
             <div className="ml-5">In progress</div>
           </div>)}
-        </Button>
+        </Button>}
       </div>
       <div className="flex flex-wrap w-full mt-5 border-b border-[#738FAB1F]">
         <div style={{ ...styles.h7 }}>Index records</div>
-        <div className="text-[#1B17F5] ml-auto cursor-pointer text-xs" onClick={handleClearIndexClick} data-testid="clear-button">Clear</div>
+        {isAdmin && <div className="text-[#1B17F5] ml-auto cursor-pointer text-xs" onClick={handleClearIndexClick} data-testid="clear-button">Clear</div>}
       </div>
       {(
         <div className={`text-xs mt-4 
                         transition-all 
                         duration-500 
                         ease-in-out 
-                        transform ${clearIndexComplete ? "translate-y-0" : "translate-y-16"} 
-                        opacity-${clearIndexComplete ? "100" : "0"} 
-                        ${clearIndexComplete ? "h-auto" : "h-0"}`}>
+                        transform ${clearIndexComplete ? 'translate-y-0' : 'translate-y-16'} 
+                        opacity-${clearIndexComplete ? '100' : '0'} 
+                        ${clearIndexComplete ? 'h-auto' : 'h-0'}`}>
           Index cleared
         </div>
       )}
@@ -255,10 +293,10 @@ export const Sidebar: React.FC = () => {
                         transition-all 
                         duration-500 
                         ease-in-out 
-                        transform ${crawling ? "translate-y-0" : "translate-y-16"} 
-                        opacity-${crawling ? "100" : "0"} ${crawling ? "h-auto" : "h-0"}`}>
+                        transform ${crawling ? 'translate-y-0' : 'translate-y-16'} 
+                        opacity-${crawling ? '100' : '0'} ${crawling ? 'h-auto' : 'h-0'}`}>
           <CircularProgress size={10} sx={{
-            color: "black",
+            color: 'black',
           }} /> <span className="ml-2">Chunking and embedding your data...</span>
         </div>
       )}

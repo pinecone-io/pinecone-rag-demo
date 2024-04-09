@@ -1,153 +1,137 @@
+import type { CategorizedRecordMetadata } from '@/api/seed/seed';
 import {
-    DirectoryServiceV3,
-    createAsyncIterable,
-    readAsyncIterable,
-    ImportMsgCase,
-    ImportOpCode,
-    objectPropertiesAsStruct
-} from "@aserto/aserto-node";
-import type { PineconeRecord, ScoredPineconeRecord } from "@pinecone-database/pinecone";
+  DirectoryServiceV3,
+  createAsyncIterable,
+  readAsyncIterable,
+  ImportMsgCase,
+  ImportOpCode,
+  objectPropertiesAsStruct
+} from '@aserto/aserto-node';
+import type { User } from '@clerk/nextjs/dist/types/server';
+import type { PineconeRecord, ScoredPineconeRecord } from '@pinecone-database/pinecone';
 
 const directoryClient = DirectoryServiceV3({
-    url: process.env.ASERTO_DIRECTORY_SERVICE_URL,
-    apiKey: process.env.ASERTO_DIRECTORY_API_KEY,
-    tenantId: process.env.ASERTO_TENANT_ID,
-    insecure: true,
+  url: process.env.ASERTO_DIRECTORY_SERVICE_URL,
+  apiKey: process.env.ASERTO_DIRECTORY_API_KEY,
+  tenantId: process.env.ASERTO_TENANT_ID,
+  insecure: true,
 });
 
 
-
-interface Object {
-    id: string;
-    type: string;
-    properties: Record<string, any>;
-    displayName: string;
-}
-
-interface Relation {
-    subjectId: string;
-    subjectType: string;
-    objectId: string;
-    objectType: string;
-    relation: string;
-}
-
-interface ImportRequestMessage {
-    case: "object" | "relation";
-    value: Object | Relation;
-}
-
-interface ImportOperation {
-    opCode: number;
-    msg: ImportRequestMessage;
-}
-
-export interface User {
-    id: string;
-    email: string;
-    name: string;
-    roles: string[];
-}
-
 export enum Permission {
-    READ = "read",
-    WRITE = "write",
-    DELETE = "delete",
+    READ = 'read',
+    WRITE = 'write',
+    DELETE = 'delete',
 }
 
-export const assignRelation = async (user: User, documents: PineconeRecord[], relationName: string) => {
+// Function to assign a relation between a user and multiple documents with a specified relation name
+export const assignRelation = async (user: User, documents: PineconeRecord<CategorizedRecordMetadata>[], relationName: string) => {  
+  // Map each document to a set of operations for setting up user-document relations
+  const operations = documents.map((document) => {
+    
+    // Construct a display name for the user
+    const userName = `${user.firstName}${user.lastName ? ' ' : ''}${user.lastName ?? ''}`
+    // Create a user object for the directory service
+    const userObject = {
+      id: user.id,
+      type: 'user',
+      properties: objectPropertiesAsStruct({
+        email: user.emailAddresses[0].emailAddress,
+        name: userName,
+        picture: user.imageUrl,
+      }),
+      displayName: userName
+    };
 
-    const operations = documents.map((document, docKey) => {
-        const userObject = {
-            id: user.id,
-            type: "user",
-            properties: objectPropertiesAsStruct({
-                email: user.email,
-                name: user.name,
-                roles: user.roles,
-            }),
-            displayName: user.name,
-        };
+    // Create a document object for the directory service
+    const documentObject = {
+      id: document.id,
+      type: 'resource',
+      properties: document.metadata ? objectPropertiesAsStruct({
+        url: document.metadata.url,
+        category: document.metadata.category,
+      }) : objectPropertiesAsStruct({}),
+      displayName: document.metadata && document.metadata.title ? document.metadata.title as string : '',
+    };
 
-        const documentObject = {
-            id: document.id,
-            type: "resource",
-            properties: document.metadata ? objectPropertiesAsStruct({
-                url: document.metadata.url,
-                hash: document.metadata.hash,
-            }) : objectPropertiesAsStruct({}),
-            displayName: document.metadata && document.metadata.title ? document.metadata.title as string : "",
-        };
+    // Define the relation between the user and the document
+    const userDocumentRelation = {
+      subjectId: user.id,
+      subjectType: 'user',
+      objectId: document.id,
+      objectType: 'resource',
+      relation: relationName,
+    };
 
-        const userDocumentRelation = {
-            subjectId: user.id,
-            subjectType: "user",
-            objectId: document.id,
-            objectType: "resource",
-            relation: relationName,
-        };
+    // Operations to set the user and document objects in the directory
+    const objectOperations: any[] = [
+      {
+        opCode: ImportOpCode.SET,
+        msg: {
+          case: ImportMsgCase.OBJECT,
+          value: userObject,
+        },
+      },
+      {
+        opCode: ImportOpCode.SET,
+        msg: {
+          case: ImportMsgCase.OBJECT,
+          value: documentObject,
+        },
+      }
+    ];
 
-        const objectOperations: any[] = [
-            {
-                opCode: ImportOpCode.SET,
-                msg: {
-                    case: ImportMsgCase.OBJECT,
-                    value: userObject,
-                },
-            },
-            {
-                opCode: ImportOpCode.SET,
-                msg: {
-                    case: ImportMsgCase.OBJECT,
-                    value: documentObject,
-                },
-            }
-        ];
+    // Operation to set the relation between the user and the document
+    const relationOperation: any = {
+      opCode: ImportOpCode.SET,
+      msg: {
+        case: ImportMsgCase.RELATION,
+        value: userDocumentRelation,
+      },
+    };
 
-        const relationOperation: any = {
-            opCode: ImportOpCode.SET,
-            msg: {
-                case: ImportMsgCase.RELATION,
-                value: userDocumentRelation,
-            },
-        };
+    // Combine object and relation operations
+    return [...objectOperations, relationOperation];
+  }).flat();
 
-        return [...objectOperations, relationOperation];
-    }).flat();
+  try {
+    // Create an async iterable from the operations and import them to the directory service
+    const importRequest = createAsyncIterable(operations);
+    const resp = await directoryClient.import(importRequest);
+    // Read and return the result of the import operation
+    const result = await (readAsyncIterable(resp))
+    return result
+  } catch (error) {
+    // Log and rethrow any errors encountered during the import
+    console.error('Error importing request: ', error);
+    throw error;
+  }
+}
+export const getFilteredMatches = async (user: User | null, matches: ScoredPineconeRecord[], permission: Permission) => {
+  matches.forEach(match => {
+    console.log(match.id);
+  });
 
-
-    try {
-        const importRequest = createAsyncIterable(operations);
-        const resp = await directoryClient.import(importRequest);
-        return await (readAsyncIterable(resp))
-    } catch (error) {
-        console.error("Error importing request: ", error);
-        throw error;
+  if (!user) {
+    console.error('No user provided. Returning empty array.')
+    return [];
+  }
+  const checks = await Promise.all(matches.map(async (match) => {
+    const permissionRequest = {
+      subjectId: user.id,
+      subjectType: 'user',
+      objectId: match.id,
+      objectType: 'resource',
+      permission: 'can_read',
     }
-}
 
+    const response = await directoryClient.checkPermission(permissionRequest);    
+    return response ? response.check : false
+  }));
+  const filteredMatches = matches.filter((match, index) => checks[index]);
 
-export const getFilteredMatches = async (user: User, matches: ScoredPineconeRecord[], permission: Permission) => {
-    matches.forEach(match => {
-        console.log(match.id);
-    });
-    const checks = await Promise.all(matches.map(async (match) => {
-        const permissionRequest = {
-            subjectId: user.id,
-            subjectType: "user",
-            objectId: match.id,
-            objectType: "resource",
-            permission: "can_read",
-        }
-        // console.log(permissionRequest)
+  const matchesThatFailed = matches.filter((match, index) => !checks[index]);
+  console.log('Categories of matches that failed: ', matchesThatFailed.map(match => match.metadata?.category));
 
-        const response = await directoryClient.checkPermission(permissionRequest);
-        if (match.id === "85ab5a7cda1429f02e663248ef4a2f6f") {
-            console.log("permissionRequest", permissionRequest)
-            console.log("response", response)
-        }
-
-        return response ? response.check : false
-    }));
-    return matches.filter((match, index) => checks[index]);
+  return filteredMatches
 }
