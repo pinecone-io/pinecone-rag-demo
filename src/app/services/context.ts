@@ -30,11 +30,12 @@ export const getContext = async ({ message, namespace, maxTokens = 3000, minScor
   // Retrieve the matches for the embeddings from the specified namespace
   const matches = await getMatchesFromEmbeddings(embedding, 10, namespace);
 
-  let noMatches = matches.length === 0;
-
-  const filteredMatches = await getFilteredMatches(user, matches, Permission.READ);
   // Filter out the matches that have a score lower than the minimum score
-  const qualifyingDocs = filteredMatches.filter(m => m.score && m.score > minScore);
+  const qualifyingDocs = matches.filter(m => m.score && m.score > minScore);
+  let noMatches = qualifyingDocs.length === 0;
+
+  const filteredMatches = await getFilteredMatches(user, qualifyingDocs, Permission.READ);
+  
   let accessNotice = false
 
   if (filteredMatches.length < matches.length) {
@@ -42,7 +43,7 @@ export const getContext = async ({ message, namespace, maxTokens = 3000, minScor
   }
 
   return {
-    documents: qualifyingDocs,
+    documents: filteredMatches,
     accessNotice,
     noMatches
   }
