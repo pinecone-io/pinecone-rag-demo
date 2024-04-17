@@ -1,6 +1,7 @@
-import Image from "next/image";
-import PineconeLogo from "../../../public/pinecone.svg";
-import VercelLogo from "../../../public/vercel.svg";
+import Image from 'next/image';
+import PineconeLogo from '../../../public/pinecone.svg';
+import { AsertoLogoSvg } from '../assets/svg/aserto';
+
 
 export default function Header({ className }: { className?: string }) {
   return (
@@ -13,15 +14,18 @@ export default function Header({ className }: { className?: string }) {
         width="160"
         height="50"
 
-      />{" "}
+      />{' '}
       <div className="text-3xl ml-3 mr-3">/</div>
-      <Image
-        src={VercelLogo}
-        alt="vercel-logo"
-        width="105.719"
-        height="23.895"
-        className="mr-3 mt-2"
-      />
+      {/* <Image
+        src={AsertoLogo}
+        alt="aserto-logo"
+        
+      /> */}
+      <AsertoLogoSvg 
+        width="110"
+        height="40"
+        className="mr-3 mt-2"/>
+
     </header>
   );
 }

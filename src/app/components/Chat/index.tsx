@@ -1,8 +1,8 @@
-import AppContext from "@/appContext";
-import type { PineconeRecord } from "@pinecone-database/pinecone";
-import React, { ChangeEvent, FormEvent, useContext, useRef } from "react";
-import ChatInput from "./ChatInput";
-import ChatWrapper, { ChatInterface } from "./ChatWrapper";
+import AppContext from '@/appContext';
+import type { PineconeRecord } from '@pinecone-database/pinecone';
+import React, { ChangeEvent, FormEvent, useContext, useRef } from 'react';
+import ChatInput from './ChatInput';
+import ChatWrapper, { ChatInterface } from './ChatWrapper';
 
 interface ChatProps {
   setContext: (data: { context: PineconeRecord[] }[]) => void;
@@ -16,9 +16,9 @@ const Chat: React.FC<ChatProps> = ({ setContext, context }) => {
 
   const { totalRecords } = useContext(AppContext);
 
-  const [input, setInput] = React.useState<string>("")
+  const [input, setInput] = React.useState<string>('')
   const onMessageSubmit = (e: FormEvent<HTMLFormElement>) => {
-    setInput("")
+    setInput('')
     chatWithContextRef.current?.handleMessageSubmit(e)
     chatWithoutContextRef.current?.handleMessageSubmit(e)
   }
@@ -32,12 +32,11 @@ const Chat: React.FC<ChatProps> = ({ setContext, context }) => {
   return (
     <div id="chat" className="flex flex-col w-full h-full">
       <div className="flex flex-grow h-full h-max-screen overflow-auto">
-        <div className="w-1/2">
-          <ChatWrapper ref={chatWithoutContextRef} withContext={true} setContext={setContext} context={context} />
+        <div className="w-full">
+          <ChatWrapper ref={chatWithoutContextRef} withContext={true} setContext={setContext} context={context ? context.map(ctx => ({ ...ctx,
+            accessNotice: true })) : null} />
         </div>
-        <div className="w-1/2">
-          <ChatWrapper ref={chatWithContextRef} withContext={false} setContext={setContext} />
-        </div>
+
       </div>
       <div className="w-full">
         <ChatInput input={input} handleInputChange={onInputChange} handleMessageSubmit={onMessageSubmit} showIndexMessage={totalRecords === 0} />
