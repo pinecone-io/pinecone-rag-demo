@@ -11,19 +11,22 @@
     "test:show": "playwright show-report"
   },
   "dependencies": {
+    "@edge-runtime/jest-environment": "^3.0.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@material-tailwind/react": "^2.1.8",
     "@mui/icons-material": "^5.15.4",
     "@mui/material": "^5.15.3",
     "@pinecone-database/doc-splitter": "^0.0.1",
-    "@pinecone-database/pinecone": "2.0.0",
+    "@pinecone-database/pinecone": "3.0.2",
     "@types/uuid": "^9.0.7",
     "ai": "^2.2.30",
     "cheerio": "^1.0.0-rc.12",
+    "edge-runtime": "^3.0.2",
     "md5": "^2.3.0",
-    "next": "14.0.4",
+    "next": "^14.2.6",
     "node-html-markdown": "^1.3.0",
+    "openai": "^4.56.0",
     "openai-edge": "^1.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -39,7 +42,7 @@
     "vue": "^3.3.13"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.1",
+    "@playwright/test": "^1.46.1",
     "@types/md5": "^2.3.5",
     "@types/node": "20.10.5",
     "@types/react": "18.2.45",

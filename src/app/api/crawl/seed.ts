@@ -3,7 +3,7 @@ import { getEmbeddings } from "@/services/embeddings";
 import { truncateStringByBytes } from "@/utils/truncateString";
 import { Document, MarkdownTextSplitter, RecursiveCharacterTextSplitter } from "@pinecone-database/doc-splitter";
 import { Pinecone, PineconeRecord } from "@pinecone-database/pinecone";
-import { ServerlessSpecCloudEnum } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
+import { ServerlessSpecCloudEnum } from '@pinecone-database/pinecone';
 import md5 from "md5";
 import { Crawler, Page } from "./crawler";
 
