@@ -56,7 +56,7 @@ export default function Messages({ messages, withContext, context }: { messages:
       {messages?.map((message, index) => {
         const isAssistant = message.role === "assistant";
         const entry = isAssistant && withContext && context && context[Math.floor(index / 2)];
-
+        
         return (
           <div
             key={message.id}
