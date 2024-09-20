@@ -21,6 +21,4 @@ export const getContext = async (message: string, namespace: string, maxTokens =
   const qualifyingDocs = matches.filter(m => m.score && m.score > minScore);
 
   return qualifyingDocs
-
-
 }

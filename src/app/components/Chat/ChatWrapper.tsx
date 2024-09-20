@@ -1,51 +1,52 @@
-import type { PineconeRecord } from "@pinecone-database/pinecone";
-import { useChat } from "ai/react";
-import React, { ChangeEvent, FormEvent, Ref, forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import { v4 as uuidv4 } from 'uuid';
+import React, { forwardRef, useImperativeHandle, FormEvent, ChangeEvent, useRef, useEffect, useState } from "react";
+import {useChat, experimental_useObject as useObject} from 'ai/react';
 import Messages from "./Messages";
+import type { PineconeRecord } from "@pinecone-database/pinecone";
+import { v4 as uuidv4 } from 'uuid';
 
 export interface ChatInterface {
-    handleMessageSubmit: (e: FormEvent<HTMLFormElement>) => void;
-    handleInputUpdated: (event: ChangeEvent<HTMLInputElement>) => void;
-    ref: Ref<ChatInterface>;
-    withContext: boolean;
+  handleMessageSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  handleInputUpdated: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface ChatProps {
-    withContext: boolean;
-    setContext: (data: { context: PineconeRecord[] }[]) => void;
-    context?: { context: PineconeRecord[] }[] | null;
-    ref: Ref<ChatInterface>
+  withContext: boolean;
+  setContext: (data: { context: PineconeRecord[] }[]) => void;
+  context?: { context: PineconeRecord[] }[] | null;
 }
 
-const Chat: React.FC<ChatProps> = forwardRef<ChatInterface, ChatProps>(({ withContext, setContext, context }, ref) => {
-    const [finished, setFinished] = React.useState<boolean>(false)
-    const { messages, handleInputChange, handleSubmit, data } = useChat({
-        sendExtraMessageFields: true,
-        body: {
-            withContext,
-        },
-        onFinish: () => {
-            setFinished(true)
-        }
-    });
+const ChatWrapper = forwardRef<ChatInterface, ChatProps>(({ withContext, setContext, context }, ref) => {
+  const [finished, setFinished] = useState(false);
+  const { messages, input, setInput, append, handleSubmit, handleInputChange, data } = useChat({
+    body: {
+      withContext
+    },
+  });
 
-    const bottomChatRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (data?.length) {
+      const { context } = data[0] as { context?: PineconeRecord[] };
+      if (context) {
+        setContext([{ context }]);
+      }
+    }
+  }, [data, setContext]);
 
-    useEffect(() => {
-        if (finished && withContext && data) {
-            setContext(data as { context: PineconeRecord[] }[]) // Logs the additional data
-            setFinished(false)
-        }
-    }, [data, finished, withContext, setContext]);
+  const bottomChatRef = useRef<HTMLDivElement | null>(null);
+  const chatRef = useRef<ChatInterface>(null);
 
-    useEffect(() => {
-        bottomChatRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+  useEffect(() => {      
+      if (finished && withContext && context) {
+          setContext(context)
+          setFinished(false)
+      }
+  }, [context, finished, withContext, setContext]);
 
-    const chatRef = useRef<ChatInterface>(null);
+  useEffect(() => {
+      bottomChatRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-    useImperativeHandle(ref, () => ({
+  useImperativeHandle(ref, () => ({
         handleMessageSubmit: (event: FormEvent<HTMLFormElement>) => {
             const id = uuidv4();
             handleSubmit(event, {
@@ -53,25 +54,27 @@ const Chat: React.FC<ChatProps> = forwardRef<ChatInterface, ChatProps>(({ withCo
                     messageId: id,
                 },
             })
-        },
-        handleInputUpdated: (event: ChangeEvent<HTMLInputElement>) => {
+    },
+    handleInputUpdated: (event: ChangeEvent<HTMLInputElement>) => {
             handleInputChange(event)
         },
         withContext,
         ref: chatRef,
-    }));
+  }));
 
-    return (
-        <div className="flex-col w-50 overflow-auto h-full" style={{ borderLeft: "1px solid #738FAB1F" }}>
-            <div className={`${messages.length == 0 ? "flex flex-col justify-center items-center h-full" : "overflow-auto"}`}>
-                {context ? <Messages messages={messages} withContext={withContext} context={context} /> : <Messages messages={messages} withContext={withContext} />}
-                <div ref={bottomChatRef} />
-            </div>
-        </div >
-    );
+  return (
+    <div className="flex-col w-50 overflow-auto h-full" style={{ borderLeft: "1px solid #738FAB1F" }}>
+      <div className={`${messages.length > 0 ? "flex flex-col justify-center items-center h-full" : "overflow-auto"}`}>
+        {context ? (
+          <Messages messages={messages} withContext={withContext} context={context} />
+        ) : (
+          <Messages messages={messages} withContext={withContext} />
+        )}
+      </div>
+    </div>
+  );
 });
 
+ChatWrapper.displayName = 'ChatWrapper';
 
-Chat.displayName = 'Chat';
-
-export default Chat;
+export default ChatWrapper;
