@@ -195,8 +195,7 @@ export const Sidebar: React.FC = () => {
           className={`mb-6 duration-100 button-primary ${crawlingDoneVisible ? "bg-green-500" : "bg-blue-700"} text-white font-medium px-8 py-3 transition-all duration-500 ease-in-out`}
           onClick={handleEmbedAndUpsertClick}
           style={{ backgroundColor: `${crawlingDoneVisible ? "#15B077" : "#1B17F5"}`, textTransform: 'none', fontSize: 14, borderRadius: 4, padding: '12px 22px', fontWeight: 400 }}
-          placeholder=""
-        >
+          placeholder="" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}        >
           {!crawling ? (crawlingDoneVisible ? "Success" : "Embed and upsert") : (<div className="flex">
             <CircularProgress size={20} sx={{
               color: "white",
