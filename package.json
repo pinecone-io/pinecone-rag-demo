@@ -21,7 +21,7 @@
     "@pinecone-database/doc-splitter": "^0.0.1",
     "@pinecone-database/pinecone": "3.0.3",
     "@types/uuid": "^10.0.0",
-    "ai": "^3.3.39",
+    "ai": "^5.0.52",
     "base64-arraybuffer": "^1.0.2",
     "cheerio": "^1.0.0",
     "edge-runtime": "^3.0.3",
