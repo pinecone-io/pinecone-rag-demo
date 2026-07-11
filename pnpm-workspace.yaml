@@ -1,0 +1,19 @@
+# pnpm v10+ reads dependency overrides from here (the package.json "pnpm" field is ignored).
+# Overrides pin transitive dependencies to patched versions to clear Dependabot
+# critical/high advisories that the direct-dependency bumps don't cover.
+overrides:
+  undici: '^6.27.0'
+  seroval: '^1.4.1'
+  form-data: '^4.0.6'
+  flatted: '^3.4.2'
+  # Scoped so old (glob@7) consumers keep the API-compatible 3.x line.
+  minimatch@3: '^3.1.4'
+  minimatch@9: '^9.0.7'
+  # Only the vulnerable 10.x instance; leaves glob@7 untouched.
+  glob@10: '^10.5.0'
+  picomatch@2: '^2.3.2'
+
+# sharp ships prebuilt binaries; allow its install script so next/image
+# optimization works at runtime.
+allowBuilds:
+  sharp: true
