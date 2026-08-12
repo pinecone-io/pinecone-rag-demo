@@ -18,7 +18,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9 # Specify the pnpm version here
+          version: 10 # pnpm 10+ required: overrides/allowBuilds live in pnpm-workspace.yaml
 
   test:
     needs: install
@@ -32,7 +32,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9 # Specify the pnpm version here
+          version: 10 # pnpm 10+ required: overrides/allowBuilds live in pnpm-workspace.yaml
       - name: Install dependencies
         run: pnpm install
       - name: Build application
