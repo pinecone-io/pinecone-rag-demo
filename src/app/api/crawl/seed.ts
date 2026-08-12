@@ -6,15 +6,17 @@ import { Pinecone, PineconeRecord } from "@pinecone-database/pinecone";
 import { ServerlessSpecCloudEnum } from '@pinecone-database/pinecone';
 import md5 from "md5";
 import { Crawler, Page } from "./crawler";
+import {
+  PINECONE_REGION,
+  PINECONE_CLOUD,
+  DIMENSION
+} from "@/utils/serverlessConfig"
 
 interface SeedOptions {
   splittingMethod: string
   chunkSize: number
   chunkOverlap: number
 }
-
-const PINECONE_REGION = process.env.PINECONE_REGION || 'us-west-2'
-const PINECONE_CLOUD = process.env.PINECONE_CLOUD || 'aws'
 
 type DocumentSplitter = RecursiveCharacterTextSplitter | MarkdownTextSplitter
 
@@ -46,8 +48,11 @@ async function seed(url: string, limit: number, indexName: string, options: Seed
     if (!indexExists) {
       await pinecone.createIndex({
         name: indexName,
-        dimension: 1536,
+        dimension: Number(DIMENSION),
+        // Wait until the index is ready to return, if it needs to be created
         waitUntilReady: true,
+        // If an index with the target name already exists, do not throw an error
+        suppressConflicts: true,
         spec: {
           serverless: {
             region: PINECONE_REGION,
@@ -126,8 +131,5 @@ async function prepareDocument(page: Page, splitter: DocumentSplitter): Promise<
     };
   });
 }
-
-
-
 
 export default seed;

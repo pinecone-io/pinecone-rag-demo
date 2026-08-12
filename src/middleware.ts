@@ -1,12 +1,14 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import checkRequiredEnvVars from '@/utils/requiredEnvVars';
 
-export function middleware(request: NextRequest) {
-    const requiredEnvVars = ['OPENAI_API_KEY', 'PINECONE_API_KEY', 'PINECONE_REGION', 'PINECONE_INDEX'];
-    requiredEnvVars.forEach(envVar => {
-        if (!process.env[envVar] && !process.env.CI) {
-            throw new Error(`${envVar} environment variable is not defined`);
+export function middleware(_request: NextRequest) {
+    try {
+        checkRequiredEnvVars();
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return new NextResponse(JSON.stringify({ error: error.message }), { status: 400 })
         }
-    });
+    }
     return NextResponse.next()
 }
