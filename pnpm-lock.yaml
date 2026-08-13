@@ -28,7 +28,7 @@ overrides:
   yaml: ^2.8.1
   sharp: ^0.35.0
   solid-js: ^1.9.4
-  svelte: ^5.51.5
+  svelte: ^5.55.7
 
 importers:
 
@@ -107,7 +107,7 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0(svelte@5.56.8)
       svelte:
-        specifier: ^5.51.5
+        specifier: ^5.55.7
         version: 5.56.8
       tailwindcss:
         specifier: 3.4.11
@@ -206,7 +206,7 @@ packages:
     resolution: {integrity: sha512-gV0MhaWxkatjf7uJrCAHO3bWrihokNUwGhuMCgyG+y53lwJKAYhR0zCoDRM2HnTJ89fdnx/PVe3R9fOWEVY5qA==}
     engines: {node: '>=18'}
     peerDependencies:
-      svelte: ^5.51.5
+      svelte: ^5.55.7
     peerDependenciesMeta:
       svelte:
         optional: true
@@ -1337,7 +1337,7 @@ packages:
       openai: ^4.42.0
       react: ^18 || ^19
       sswr: ^2.1.0
-      svelte: ^5.51.5
+      svelte: ^5.55.7
       zod: ^3.0.0
     peerDependenciesMeta:
       openai:
@@ -3695,7 +3695,7 @@ packages:
   sswr@2.1.0:
     resolution: {integrity: sha512-Cqc355SYlTAaUt8iDPaC/4DPPXK925PePLMxyBKuWd5kKc5mwsG3nT9+Mq2tyguL5s7b4Jg+IRMpTRsNTAfpSQ==}
     peerDependencies:
-      svelte: ^5.51.5
+      svelte: ^5.55.7
 
   stack-utils@2.0.6:
     resolution: {integrity: sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ==}
