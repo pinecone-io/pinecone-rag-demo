@@ -30,7 +30,7 @@ overrides:
   # Unused framework adapters pulled in transitively by ai@3; patched to clear
   # their XSS advisories without affecting this React-only app.
   solid-js: '^1.9.4'
-  svelte: '^5.51.5'
+  svelte: '^5.55.7'
 
 # sharp ships prebuilt binaries; allow its install script so next/image
 # optimization works at runtime.
