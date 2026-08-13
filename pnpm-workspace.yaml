@@ -2,7 +2,7 @@
 # Overrides pin transitive dependencies to patched versions to clear Dependabot
 # critical/high advisories that the direct-dependency bumps don't cover.
 overrides:
-  undici: '^6.27.0'
+  undici: '^6.28.0'
   seroval: '^1.4.1'
   form-data: '^4.0.6'
   flatted: '^3.4.2'
@@ -12,6 +12,25 @@ overrides:
   # Only the vulnerable 10.x instance; leaves glob@7 untouched.
   glob@10: '^10.5.0'
   picomatch@2: '^2.3.2'
+  braces: '^3.0.3'
+  brace-expansion@1: '^1.1.12'
+  brace-expansion@2: '^2.1.4'
+  # Scoped so the fix stays on the 4.x line eslint expects.
+  js-yaml@4: '^4.1.1'
+  micromatch: '^4.0.8'
+  cross-spawn: '^7.0.6'
+  nanoid: '^3.3.8'
+  postcss: '^8.5.10'
+  '@babel/runtime': '^7.26.10'
+  mdast-util-to-hast: '^13.2.1'
+  jsondiffpatch: '^0.7.2'
+  qs: '^6.14.2'
+  yaml: '^2.8.1'
+  sharp: '^0.35.0'
+  # Unused framework adapters pulled in transitively by ai@3; patched to clear
+  # their XSS advisories without affecting this React-only app.
+  solid-js: '^1.9.4'
+  svelte: '^5.51.5'
 
 # sharp ships prebuilt binaries; allow its install script so next/image
 # optimization works at runtime.
