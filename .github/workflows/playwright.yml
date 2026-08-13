@@ -18,7 +18,7 @@ jobs:
           version: 10 # pnpm 10+ required: overrides/allowBuilds live in pnpm-workspace.yaml
       - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
