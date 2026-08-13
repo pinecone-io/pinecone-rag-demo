@@ -9,21 +9,40 @@ on:
 permissions:
   contents: read
 jobs:
-  build:
+  quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
         with:
-          version: 9
+          version: 10
       - uses: actions/setup-node@v7
         with:
           node-version: 20
+          cache: pnpm
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
       - name: Lint
         run: pnpm run lint
       - name: Type-check
-        run: npx tsc --noEmit
+        run: pnpm run typecheck
+      - name: Unit tests
+        run: pnpm run test:coverage
       - name: Build
         run: pnpm run build
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Audit (fail on high or critical)
+        run: pnpm audit --audit-level high
