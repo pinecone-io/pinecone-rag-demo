@@ -59,8 +59,8 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       '@pinecone-database/pinecone':
-        specifier: 3.0.3
-        version: 3.0.3
+        specifier: 8.2.0
+        version: 8.2.0
       ai:
         specifier: ^3.3.39
         version: 3.3.39(openai@4.61.1(encoding@0.1.13)(zod@3.23.8))(react@18.3.1)(sswr@2.1.0(svelte@5.56.8))(svelte@5.56.8)(vue@3.5.6(typescript@5.6.2))(zod@3.23.8)
@@ -1088,9 +1088,9 @@ packages:
     resolution: {integrity: sha512-UCJgNZKnXPcrTblI9ui6H+HbQbyYf8bsGQAGR3f4IYW2Lw1zQ0izFrjGsCgqiP+GE837JXv43+qgkSqwWlnZtA==}
     engines: {node: '>=14.0.0'}
 
-  '@pinecone-database/pinecone@3.0.3':
-    resolution: {integrity: sha512-0cAG0d/6knVZgVyXM1II4qG3dyOepLuAQsCXTOJomdA7iQxf+/Om9mq9Cw4QObr56oZ+lqtptlw5qz0BQaBX2Q==}
-    engines: {node: '>=18.0.0'}
+  '@pinecone-database/pinecone@8.2.0':
+    resolution: {integrity: sha512-4Lzn+Ph4Lmf8ZEm2Ky1WGgPJJtoMtjSCmsT6bdHpd8nhkUnCQqk/NsbPYglx7irWYJpb2zBE+wehNBfoCeJ6Qw==}
+    engines: {node: '>=20.0.0'}
 
   '@pkgr/utils@2.4.1':
     resolution: {integrity: sha512-JOqwkgFEyi+OROIyq7l4Jy28h/WwhDnG/cPkXG2Z1iFbubB6jsHW1NDvmyOzTBxHr3yg68YGirmh1JUgMqa+9w==}
@@ -5194,9 +5194,7 @@ snapshots:
 
   '@pinecone-database/doc-splitter@0.0.1': {}
 
-  '@pinecone-database/pinecone@3.0.3':
-    dependencies:
-      encoding: 0.1.13
+  '@pinecone-database/pinecone@8.2.0': {}
 
   '@pkgr/utils@2.4.1':
     dependencies:
@@ -6182,6 +6180,7 @@ snapshots:
   encoding@0.1.13:
     dependencies:
       iconv-lite: 0.6.3
+    optional: true
 
   enhanced-resolve@5.15.0:
     dependencies:
