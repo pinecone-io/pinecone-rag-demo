@@ -7,6 +7,7 @@ import type { PineconeRecord } from "@pinecone-database/pinecone";
 import React, { useEffect, useState } from "react";
 import { FaGithub } from 'react-icons/fa';
 import AppContext from "./appContext";
+import checkRequiredEnvVars from "@/utils/requiredEnvVars"
 
 const Page: React.FC = () => {
   const [context, setContext] = useState<{ context: PineconeRecord[] }[] | null>(null);
@@ -14,7 +15,13 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     if (totalRecords === 0) {
-      refreshIndex()
+      try {
+        refreshIndex()
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw new Error(error.message)
+        }
+      }
     }
   }, [refreshIndex, totalRecords])
 
