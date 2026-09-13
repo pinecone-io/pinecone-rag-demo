@@ -23,7 +23,7 @@
     "@mui/icons-material": "^6.1.0",
     "@mui/material": "^6.1.0",
     "@pinecone-database/doc-splitter": "^0.0.1",
-    "@pinecone-database/pinecone": "3.0.3",
+    "@pinecone-database/pinecone": "8.2.0",
     "ai": "^3.3.39",
     "base64-arraybuffer": "^1.0.2",
     "cheerio": "^1.0.0",
